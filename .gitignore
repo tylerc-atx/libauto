@@ -33,3 +33,5 @@
 
 # OSX
 .DS_Store
+
+*.db
