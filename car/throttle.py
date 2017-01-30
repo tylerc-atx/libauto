@@ -31,3 +31,27 @@ def set_throttle(throttle):
 
 set_throttle(0.0)
 
+
+def calibrate_esc():
+
+    PIN = THROTTLE_PIN
+    MIN = THROTTLE_FULL_REVERSE_VALUE - 0.01
+    MID = THROTTLE_ZERO_VALUE
+    MAX = THROTTLE_FULL_FORWARD_VALUE + 0.01
+
+    set_pin_pwm_value(PIN, MID)
+
+    _ = input("In neutral, press enter to enter full throttle.")
+
+    set_pin_pwm_value(PIN, MAX)
+
+    _ = input("In full throttle, press enter to enter reverse throttle.")
+
+    set_pin_pwm_value(PIN, MIN)
+
+    _ = input("In reverse throttle, press enter to return to neutral.")
+
+    set_pin_pwm_value(PIN, MID)
+
+    _ = input("In neutral, press enter to exit.")
+
