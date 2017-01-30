@@ -18,7 +18,7 @@ set_output_pin_value(SONAR_TRIGGER_PIN, False)
 delay_micros(100000)  # 0.1 seconds
 
 
-def get_echo_micros():
+def emit():
 
     set_output_pin_value(SONAR_TRIGGER_PIN, True)
     delay_micros(10)
@@ -27,33 +27,33 @@ def get_echo_micros():
     while query_input_pin(SONAR_ECHO_PIN) == False:
         pass
 
-    start = query_micros()
+
+def detect_echo():
 
     while query_input_pin(SONAR_ECHO_PIN) == True:
         pass
 
+
+def echo_time():
+
+    emit()
+    start = query_micros()
+
+    detect_echo()
     end = query_micros()
 
     return end - start
 
 
-def compute_distance_meters(echo_micros):
+def echo_distance():
 
-    distance_meters = echo_micros * 0.0003432
+    distance_meters = echo_time() * 0.0003432
     return distance_meters
 
 
-def compute_distance_feet(echo_micros):
-
-    distance_feet = compute_distance_meters(echo_micros) * 3.28084
-    return distance_feet
-
-
 if __name__ == '__main__':
+    import time
     for i in range(100):
-        import time
-        echo_micros = get_echo_micros()
-        print("meters = {}".format(compute_distance_meters(echo_micros)))
-        print("feet   = {}\n".format(compute_distance_feet(echo_micros)))
+        print("meters = {}".format(echo_distance()))
         time.sleep(0.1)
 
