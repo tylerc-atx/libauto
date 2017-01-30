@@ -32,7 +32,8 @@ def set_throttle(throttle):
 set_throttle(0.0)
 
 
-def set_throttle_pin(pin_index):
+def set_throttle_pin():
+    pin_index = int(input("enter the throttle pin index: "))
     STORE.put('THROTTLE_PIN',  pin_index)
     print("process restart required")
 
