@@ -40,6 +40,16 @@ def set_throttle_pin():
 
 def calibrate_esc():
 
+    global THROTTLE_FULL_REVERSE_VALUE, THROTTLE_ZERO_VALUE, THROTTLE_FULL_FORWARD_VALUE
+
+    THROTTLE_FULL_REVERSE_VALUE = float(input("enter throttle full-reverse value: "))
+    THROTTLE_ZERO_VALUE         = float(input("enter throttle neutral value: "))
+    THROTTLE_FULL_FORWARD_VALUE = float(input("enter throttle full-forward value: "))
+
+    STORE.put('THROTTLE_FULL_REVERSE_VALUE', THROTTLE_FULL_REVERSE_VALUE)
+    STORE.put('THROTTLE_ZERO_VALUE', THROTTLE_ZERO_VALUE)
+    STORE.put('THROTTLE_FULL_FORWARD_VALUE', THROTTLE_FULL_FORWARD_VALUE)
+
     PIN = THROTTLE_PIN
     MIN = THROTTLE_FULL_REVERSE_VALUE - 0.01
     MID = THROTTLE_ZERO_VALUE
