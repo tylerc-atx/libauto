@@ -19,6 +19,9 @@ delay_micros(100000)  # 0.1 seconds
 
 
 def emit():
+    """
+    Triggers the sonar sensor to emit a small sound.
+    """
 
     set_output_pin_value(SONAR_TRIGGER_PIN, True)
     delay_micros(10)
@@ -29,12 +32,21 @@ def emit():
 
 
 def detect_echo():
+    """
+    Waits for the sonar sensor to report the time elapsed
+    between when it emitted the sound and when it detected
+    the returning sound.
+    """
 
     while query_input_pin(SONAR_ECHO_PIN) == True:
         pass
 
 
 def echo_time():
+    """
+    Computes the amount of time (in seconds) between
+    a call to `emit()` and a call to `detect_echo()`.
+    """
 
     emit()
     start = query_micros()
@@ -42,18 +54,27 @@ def echo_time():
     detect_echo()
     end = query_micros()
 
-    return end - start
+    return (end - start) / 1000000.0
 
 
-def echo_distance():
+def query_distance(sound_speed=343.2):
+    """
+    Uses the `echo_time()` function and the provided
+    sound speed (via the `sound_speed` parameter) to
+    compute the distance between the car and the first
+    obstacle which reflects sound well.
 
-    distance_meters = echo_time() * 0.0003432
+    The default for `sound_speed` (343.2) is in meters
+    per second.
+    """
+
+    distance_meters = (echo_time() / 2.0) * sound_speed
     return distance_meters
 
 
 if __name__ == '__main__':
     import time
     for i in range(100):
-        print("meters = {}".format(echo_distance()))
+        print("meters = {}".format(query_distance()))
         time.sleep(0.1)
 
