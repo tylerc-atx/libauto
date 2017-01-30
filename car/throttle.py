@@ -29,5 +29,5 @@ def set_throttle(throttle):
     set_pin_pwm_value(THROTTLE_PIN, (b - a) * (throttle / 100.0) + a)
 
 
-set_throttle(0)
+set_throttle(0.0)
 

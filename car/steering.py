@@ -29,7 +29,7 @@ def set_steering(angle):
     set_pin_pwm_value(STEERING_PIN, (b - a) * (angle / 45.0) + a)
 
 
-set_steering(0)
+set_steering(0.0)
 
 
 def calibrate_steering(smin, smid, smax):
