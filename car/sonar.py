@@ -7,8 +7,8 @@ from car.gpio import (setup_output_on_pin,
                       query_micros)
 
 
-SONAR_TRIGGER_PIN = STORE.get('SONAR_TRIGGER_PIN', 17)
-SONAR_ECHO_PIN    = STORE.get('SONAR_ECHO_PIN',    27)
+SONAR_TRIGGER_PIN = STORE.get('SONAR_TRIGGER_PIN', 27)
+SONAR_ECHO_PIN    = STORE.get('SONAR_ECHO_PIN',    17)
 
 
 setup_output_on_pin(SONAR_TRIGGER_PIN)

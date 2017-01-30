@@ -1,4 +1,5 @@
 # The following tells wiringpi to open /dev/gpiomem instead of /dev/mem.
+import os
 os.environ['WIRINGPI_GPIOMEM'] = "1"
 
 import wiringpi as wpi
@@ -34,7 +35,7 @@ def setup_output_on_pin(pin_index):
     wpi.pinMode(pin_index, 1)  # 0=input, 1=output, 2=hardPWM
 
 
-def set_output_pin_value(pin_index value):
+def set_output_pin_value(pin_index, value):
     wpi.digitalWrite(pin_index, 1 if value else 0) # 0=low, 1=high
 
 
@@ -43,7 +44,7 @@ def setup_input_on_pin(pin_index):
 
 
 def query_input_pin(pin_index):
-    return wpi.digitalRead(ECHO) == 1
+    return wpi.digitalRead(pin_index) == 1
 
 
 def delay_micros(num_microseconds):
