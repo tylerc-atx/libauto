@@ -72,11 +72,8 @@ def query_distance(sound_speed=343.2):
     return distance_meters
 
 
-def set_sonar_pins(trigger_pin, echo_pin):
-    global SONAR_TRIGGER_PIN, SONAR_ECHO_PIN
-    SONAR_TRIGGER_PIN = trigger_pin
-    SONAR_ECHO_PIN = echo_pin
-    STORE.put('SONAR_TRIGGER_PIN',  SONAR_TRIGGER_PIN)
-    STORE.put('SONAR_ECHO_PIN',  SONAR_ECHO_PIN)
+def set_sonar_pins(trigger_pin_index, echo_pin_index):
+    STORE.put('SONAR_TRIGGER_PIN',  trigger_pin_index)
+    STORE.put('SONAR_ECHO_PIN',  echo_pin_index)
     print("process restart required")
 

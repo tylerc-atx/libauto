@@ -32,6 +32,11 @@ def set_throttle(throttle):
 set_throttle(0.0)
 
 
+def set_throttle_pin(pin_index):
+    STORE.put('THROTTLE_PIN',  pin_index)
+    print("process restart required")
+
+
 def calibrate_esc():
 
     PIN = THROTTLE_PIN

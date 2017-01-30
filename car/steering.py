@@ -47,6 +47,11 @@ def _calibrate_steering(smin, smid, smax):
     forward()
 
 
+def set_steering_pin(pin_index):
+    STORE.put('STEERING_PIN',  pin_index)
+    print("process restart required")
+
+
 def calibrate_steering():
 
     while True:
