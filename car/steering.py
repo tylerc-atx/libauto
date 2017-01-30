@@ -32,7 +32,7 @@ def set_steering(angle):
 set_steering(0.0)
 
 
-def calibrate_steering(smin, smid, smax):
+def _calibrate_steering(smin, smid, smax):
     global STEERING_ZERO_VALUE, STEERING_LEFT_VALUE, STEERING_RIGHT_VALUE
     STEERING_ZERO_VALUE  = smid
     STEERING_LEFT_VALUE  = smax
@@ -45,4 +45,18 @@ def calibrate_steering(smin, smid, smax):
     left()
     right()
     forward()
+
+
+def calibrate_steering():
+
+    while True:
+
+        smin = float(input("Steering min: "))
+        smid = float(input("Steering mid: "))
+        smax = float(input("Steering max: "))
+
+        _calibrate_steering(smin, smid, smax)
+
+        if input("Keep? [n/y] ") == 'y':
+            break
 
