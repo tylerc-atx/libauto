@@ -2,7 +2,7 @@ from car import STORE
 from car.gpio import setup_pwm_on_pin, set_pin_pwm_value
 
 
-STEERING_PIN         = STORE.get('STEERING_PIN',         24)
+STEERING_PIN         = STORE.get('STEERING_PIN',         23)
 STEERING_ZERO_VALUE  = STORE.get('STEERING_ZERO_VALUE',  14.0)
 STEERING_LEFT_VALUE  = STORE.get('STEERING_LEFT_VALUE',  19.0)
 STEERING_RIGHT_VALUE = STORE.get('STEERING_RIGHT_VALUE',  9.0)
@@ -11,7 +11,7 @@ STEERING_RIGHT_VALUE = STORE.get('STEERING_RIGHT_VALUE',  9.0)
 setup_pwm_on_pin(STEERING_PIN)
 
 
-def clamp(n, smallest, largest):
+def _clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
 
 
@@ -19,7 +19,7 @@ def set_steering(angle):
     zero = STEERING_ZERO_VALUE
     left = STEERING_LEFT_VALUE
     right = STEERING_RIGHT_VALUE
-    angle = clamp(angle, -45.0, 45.0)
+    angle = _clamp(angle, -45.0, 45.0)
     if angle < 0:
         angle = -angle
         other = right
@@ -32,7 +32,7 @@ def set_steering(angle):
 set_steering(0.0)
 
 
-def _calibrate_steering(smin, smid, smax):
+def _calibrate_steering_helper(smin, smid, smax):
     global STEERING_ZERO_VALUE, STEERING_LEFT_VALUE, STEERING_RIGHT_VALUE
     STEERING_ZERO_VALUE  = smid
     STEERING_LEFT_VALUE  = smax
@@ -47,7 +47,7 @@ def _calibrate_steering(smin, smid, smax):
     forward()
 
 
-def calibrate_steering():
+def _calibrate_steering():
 
     while True:
 
@@ -55,13 +55,13 @@ def calibrate_steering():
         smid = float(input("Steering mid: "))
         smax = float(input("Steering max: "))
 
-        _calibrate_steering(smin, smid, smax)
+        _calibrate_steering_helper(smin, smid, smax)
 
         if input("Keep? [n/y] ") == 'y':
             break
 
 
-def set_steering_pin():
+def _set_steering_pin():
     pin_index = int(input("enter the steering pin index: "))
     STORE.put('STEERING_PIN',  pin_index)
     print("process restart required")

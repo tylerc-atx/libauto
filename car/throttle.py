@@ -11,7 +11,7 @@ THROTTLE_FULL_REVERSE_VALUE = STORE.get('THROTTLE_FULL_REVERSE_VALUE', 10.0)
 setup_pwm_on_pin(THROTTLE_PIN)
 
 
-def clamp(n, smallest, largest):
+def _clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
 
 
@@ -19,7 +19,7 @@ def set_throttle(throttle):
     zero = THROTTLE_ZERO_VALUE
     forward = THROTTLE_FULL_FORWARD_VALUE
     reverse = THROTTLE_FULL_REVERSE_VALUE
-    throttle = clamp(throttle, -100.0, 100.0)
+    throttle = _clamp(throttle, -100.0, 100.0)
     if throttle < 0:
         throttle = -throttle
         other = reverse
@@ -33,13 +33,13 @@ set_throttle(0.0)
 delay_micros(500000)  # 0.5 seconds
 
 
-def set_throttle_pin():
+def _set_throttle_pin():
     pin_index = int(input("enter the throttle pin index: "))
     STORE.put('THROTTLE_PIN',  pin_index)
     print("process restart required")
 
 
-def calibrate_esc():
+def _calibrate_esc():
 
     global THROTTLE_FULL_REVERSE_VALUE, THROTTLE_ZERO_VALUE, THROTTLE_FULL_FORWARD_VALUE
 

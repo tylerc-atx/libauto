@@ -4,12 +4,12 @@ from car import sonar
 
 
 def set_pins():
-    throttle.set_throttle_pin()
-    steering.set_steering_pin()
+    throttle._set_throttle_pin()
+    steering._set_steering_pin()
     sonar._set_sonar_pins()
 
 
 def calibrate():
-    throttle.calibrate_esc()
-    steering.calibrate_steering()
+    throttle._calibrate_esc()
+    steering._calibrate_steering()
 
