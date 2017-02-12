@@ -24,12 +24,10 @@ def forward(t=0.65):
     from car.throttle import set_throttle
     print("Driving forward for {} seconds.".format(t))
     set_steering(0.0)
-    set_throttle(30)
-    time.sleep(0.1)
+    time.sleep(0.05)
     set_throttle(90)
     time.sleep(t)
     set_throttle(0)
-    time.sleep(0.2)
 
 
 def reverse(t=0.65):
@@ -41,12 +39,13 @@ def reverse(t=0.65):
     from car.throttle import set_throttle
     print("Driving in reverse for {} seconds.".format(t))
     set_steering(0.0)
-    set_throttle(-30)
+    set_throttle(-45)
     time.sleep(0.1)
+    set_throttle(0)
+    time.sleep(0.05)
     set_throttle(-90)
     time.sleep(t)
     set_throttle(0)
-    time.sleep(0.2)
 
 
 def left(t=0.65):
@@ -58,12 +57,10 @@ def left(t=0.65):
     from car.throttle import set_throttle
     print("Driving left for {} seconds.".format(t))
     set_steering(45.0)
-    set_throttle(30)
-    time.sleep(0.1)
+    time.sleep(0.05)
     set_throttle(90)
     time.sleep(t)
     set_throttle(0)
-    time.sleep(0.2)
 
 
 def right(t=0.65):
@@ -75,10 +72,8 @@ def right(t=0.65):
     from car.throttle import set_throttle
     print("Driving right for {} seconds.".format(t))
     set_steering(-45.0)
-    set_throttle(30)
-    time.sleep(0.1)
+    time.sleep(0.05)
     set_throttle(90)
     time.sleep(t)
     set_throttle(0)
-    time.sleep(0.2)
 
