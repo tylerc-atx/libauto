@@ -1,3 +1,11 @@
+"""
+Copyright (c) 2017 AutoAuto, LLC
+ALL RIGHTS RESERVED
+
+Use of this library, in source or binary form, is prohibited without written
+approval from AutoAuto, LLC.
+"""
+
 from car import STORE
 from car.gpio import (setup_output_on_pin,
                       setup_input_on_pin,

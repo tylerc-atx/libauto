@@ -1,4 +1,12 @@
 """
+Copyright (c) 2017 AutoAuto, LLC
+ALL RIGHTS RESERVED
+
+Use of this library, in source or binary form, is prohibited without written
+approval from AutoAuto, LLC.
+"""
+
+"""
 This module is an adapter for the GPIO interface of whatever SBC you are using.
 
 If you're using a Raspberry Pi, this module will internally use the WiringPi library,

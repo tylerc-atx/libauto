@@ -1,3 +1,11 @@
+"""
+Copyright (c) 2017 AutoAuto, LLC
+ALL RIGHTS RESERVED
+
+Use of this library, in source or binary form, is prohibited without written
+approval from AutoAuto, LLC.
+"""
+
 from car import STORE
 from car.gpio import setup_pwm_on_pin, set_pin_pwm_value
 
