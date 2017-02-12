@@ -12,10 +12,15 @@ setup_pwm_on_pin(STEERING_PIN)
 
 
 def _clamp(n, smallest, largest):
+    """Clamp `n` into the range [`smallest`, `largest`], and return it."""
     return max(smallest, min(n, largest))
 
 
 def set_steering(angle):
+    """
+    Set the vehicle's steering in the range [-45, 45], where -45 means
+    full-right and 45 means full-left.
+    """
     zero = STEERING_ZERO_VALUE
     left = STEERING_LEFT_VALUE
     right = STEERING_RIGHT_VALUE
@@ -48,6 +53,10 @@ def _calibrate_steering_helper(smin, smid, smax):
 
 
 def _calibrate_steering():
+    """
+    Ask the user to input the steering PWM range parameters, and then
+    store them in the database.
+    """
 
     while True:
 
@@ -62,6 +71,11 @@ def _calibrate_steering():
 
 
 def _set_steering_pin():
+    """
+    Ask the user to input the steering pin index, and then
+    store it in the database. To use the steering, the
+    process should be restarted after a call to this function.
+    """
     pin_index = int(input("enter the steering pin index: "))
     STORE.put('STEERING_PIN',  pin_index)
     print("process restart required")

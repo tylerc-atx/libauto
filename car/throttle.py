@@ -12,10 +12,15 @@ setup_pwm_on_pin(THROTTLE_PIN)
 
 
 def _clamp(n, smallest, largest):
+    """Clamp `n` into the range [`smallest`, `largest`], and return it."""
     return max(smallest, min(n, largest))
 
 
 def set_throttle(throttle):
+    """
+    Set the vehicle's throttle in the range [-100, 100], where -100 means
+    full-reverse and 100 means full-forward.
+    """
     zero = THROTTLE_ZERO_VALUE
     forward = THROTTLE_FULL_FORWARD_VALUE
     reverse = THROTTLE_FULL_REVERSE_VALUE
@@ -34,12 +39,21 @@ delay_micros(500000)  # 0.5 seconds
 
 
 def _set_throttle_pin():
+    """
+    Ask the user to input the throttle pin index, and then
+    store it in the database. To use the throttle, the
+    process should be restarted after a call to this function.
+    """
     pin_index = int(input("enter the throttle pin index: "))
     STORE.put('THROTTLE_PIN',  pin_index)
     print("process restart required")
 
 
 def _calibrate_esc():
+    """
+    Ask the user to input the throttle PWM range parameters, and then
+    store them in the database.
+    """
 
     global THROTTLE_FULL_REVERSE_VALUE, THROTTLE_ZERO_VALUE, THROTTLE_FULL_FORWARD_VALUE
 
