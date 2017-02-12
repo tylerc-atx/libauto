@@ -8,10 +8,13 @@ STORE = db.KeyValueStore(DB_FILE_PATH)
 
 
 def forward(t=0.65):
+    """
+    Drive the car forward for `t` seconds.
+    """
     import time
     from car.steering import set_steering
     from car.throttle import set_throttle
-    print("Driving forward to {} second.".format(t))
+    print("Driving forward for {} seconds.".format(t))
     set_steering(0.0)
     set_throttle(30)
     time.sleep(0.1)
@@ -22,10 +25,13 @@ def forward(t=0.65):
 
 
 def reverse(t=0.65):
+    """
+    Drive the car in reverse for `t` seconds.
+    """
     import time
     from car.steering import set_steering
     from car.throttle import set_throttle
-    print("Driving in reverse to {} second.".format(t))
+    print("Driving in reverse for {} seconds.".format(t))
     set_steering(0.0)
     set_throttle(-30)
     time.sleep(0.1)
@@ -36,10 +42,13 @@ def reverse(t=0.65):
 
 
 def left(t=0.65):
+    """
+    Drive the car forward and left for `t` seconds.
+    """
     import time
     from car.steering import set_steering
     from car.throttle import set_throttle
-    print("Driving left to {} second.".format(t))
+    print("Driving left for {} seconds.".format(t))
     set_steering(45.0)
     set_throttle(30)
     time.sleep(0.1)
@@ -50,10 +59,13 @@ def left(t=0.65):
 
 
 def right(t=0.65):
+    """
+    Drive the car forward and right for `t` seconds.
+    """
     import time
     from car.steering import set_steering
     from car.throttle import set_throttle
-    print("Driving right to {} second.".format(t))
+    print("Driving right for {} seconds.".format(t))
     set_steering(-45.0)
     set_throttle(30)
     time.sleep(0.1)
