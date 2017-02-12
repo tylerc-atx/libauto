@@ -15,9 +15,9 @@ class KeyValueStore(object):
         self.db = None
         self.first = True
         if same_thread:
-            self.db = self.get_db()
+            self.db = self._get_db()
 
-    def get_db(self):
+    def _get_db(self):
         if self.db:
             return self.db
         else:
@@ -30,7 +30,7 @@ class KeyValueStore(object):
 
     def get(self, key, default_value=None):
         query = 'SELECT v FROM key_value_store WHERE k=?'
-        db = self.get_db()
+        db = self._get_db()
         cur = db.execute(query, (key, ))
         rv = cur.fetchall()
         value = rv[0][0] if rv else default_value
@@ -40,7 +40,7 @@ class KeyValueStore(object):
 
     def put(self, key, value):
         query = 'INSERT OR REPLACE INTO key_value_store (k, v) VALUES (?, ?)'
-        db = self.get_db()
+        db = self._get_db()
         cur = db.execute(query, (key, value))
         c = cur.rowcount
         cur.close()
