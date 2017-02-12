@@ -21,15 +21,15 @@ delay_micros(200000)  # 0.2 seconds
 
 def _wait_for(pin, value, timeout):
     """
-    Wait for the given pin to become the given value, or time out.
+    Wait for the given `pin` to become the given `value`, or time out.
     The `timeout` parameter is in seconds.
-    Returns True if the pin became the value before the timeout, or
-    returns False if the timeout was reached.
+    Returns `True` if the pin became the value before the timeout, or
+    returns `False` if the timeout was reached.
     """
     timeout_micros = timeout * 1000000
     start = query_micros()
     while True:
-        for _ in range(10000):
+        for _ in range(100000):
             if query_input_pin(pin) == value:
                 return True
         end = query_micros()
@@ -37,40 +37,22 @@ def _wait_for(pin, value, timeout):
             return False
 
 
-def emit():
+def echo_time():
     """
-    Triggers the sonar sensor to emit a small sound.
+    Emit a ping and compute the amount of time (in seconds) it takes
+    for the ping to go round-trip.
     """
 
     set_output_pin_value(SONAR_TRIGGER_PIN, True)
     delay_micros(10)
     set_output_pin_value(SONAR_TRIGGER_PIN, False)
 
-    return _wait_for(SONAR_ECHO_PIN, True, 2.0)
-
-
-def detect_echo():
-    """
-    Waits for the sonar sensor to report the time elapsed
-    between when it emitted the sound and when it detected
-    the returning sound.
-    """
-
-    return _wait_for(SONAR_ECHO_PIN, False, 2.0)
-
-
-def echo_time():
-    """
-    Computes the amount of time (in seconds) between
-    a call to `emit()` and a call to `detect_echo()`.
-    """
-
-    e = emit()
+    e = _wait_for(SONAR_ECHO_PIN, True, 2.0)
     start = query_micros()
     if not e:
         return float('inf')
 
-    d = detect_echo()
+    d = _wait_for(SONAR_ECHO_PIN, False, 2.0)
     end = query_micros()
     if not d:
         return float('inf')
@@ -80,7 +62,7 @@ def echo_time():
 
 def query_distance(sound_speed=343.2):
     """
-    Uses the `echo_time()` function and the provided
+    Use the `echo_time()` function and the provided
     sound speed (via the `sound_speed` parameter) to
     compute the distance between the car and the first
     obstacle which reflects sound well.
