@@ -9,6 +9,7 @@ from car.gpio import (setup_output_on_pin,
 
 SONAR_TRIGGER_PIN = STORE.get('SONAR_TRIGGER_PIN', 27)
 SONAR_ECHO_PIN    = STORE.get('SONAR_ECHO_PIN',    17)
+
 SONAR_MAX_DISTANCE_METERS_CUTOFF = STORE.get('SONAR_MAX_DISTANCE_METERS_CUTOFF', 1.0)
 
 
@@ -86,11 +87,20 @@ def _set_sonar_pins():
 
     trigger_pin_index = int(input("enter the trigger pin index: "))
     echo_pin_index = int(input("enter the echo pin index: "))
-    max_cutoff = float(input("enter the max sonar cutoff distance: "))
 
     STORE.put('SONAR_TRIGGER_PIN',  trigger_pin_index)
     STORE.put('SONAR_ECHO_PIN',  echo_pin_index)
-    STORE.put('SONAR_MAX_DISTANCE_METERS_CUTOFF', max_cutoff)
 
     print("process restart required")
+
+
+def _calibrate_sonar():
+    """
+    Calibrate the sonar sensor. This is a very basic calibration where
+    you only are asked for the max distance the sonar sensor can detect.
+    """
+    global SONAR_MAX_DISTANCE_METERS_CUTOFF
+    SONAR_MAX_DISTANCE_METERS_CUTOFF = \
+            float(input("enter the max sonar cutoff distance: "))
+    STORE.put('SONAR_MAX_DISTANCE_METERS_CUTOFF', SONAR_MAX_DISTANCE_METERS_CUTOFF)
 
