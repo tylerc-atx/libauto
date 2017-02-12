@@ -3,7 +3,7 @@ import os
 
 
 CURR_DIR = os.path.dirname(os.path.realpath(__file__))
-DB_FILE_PATH = os.path.join(CURR_DIR, 'gpio_settings.db')
+DB_FILE_PATH = os.path.join(CURR_DIR, 'settings.db')
 STORE = db.KeyValueStore(DB_FILE_PATH)
 
 
