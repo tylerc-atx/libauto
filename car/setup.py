@@ -6,7 +6,7 @@ from car import sonar
 def set_pins():
     throttle.set_throttle_pin()
     steering.set_steering_pin()
-    sonar.set_sonar_pins()
+    sonar._set_sonar_pins()
 
 
 def calibrate():
