@@ -15,7 +15,7 @@ DB_FILE_PATH = os.path.join(CURR_DIR, 'settings.db')
 STORE = db.KeyValueStore(DB_FILE_PATH)
 
 
-def forward(t=0.65):
+def forward(t=1.0):
     """
     Drive the car forward for `t` seconds.
     """
@@ -25,12 +25,12 @@ def forward(t=0.65):
     print("Driving forward for {} seconds.".format(t))
     set_steering(0.0)
     time.sleep(0.05)
-    set_throttle(90)
+    set_throttle(60)
     time.sleep(t)
     set_throttle(0)
 
 
-def reverse(t=0.65):
+def reverse(t=1.0):
     """
     Drive the car in reverse for `t` seconds.
     """
@@ -43,12 +43,12 @@ def reverse(t=0.65):
     time.sleep(0.1)
     set_throttle(0)
     time.sleep(0.05)
-    set_throttle(-90)
+    set_throttle(-60)
     time.sleep(t)
     set_throttle(0)
 
 
-def left(t=0.65):
+def left(t=1.0):
     """
     Drive the car forward and left for `t` seconds.
     """
@@ -58,12 +58,12 @@ def left(t=0.65):
     print("Driving left for {} seconds.".format(t))
     set_steering(45.0)
     time.sleep(0.05)
-    set_throttle(90)
+    set_throttle(60)
     time.sleep(t)
     set_throttle(0)
 
 
-def right(t=0.65):
+def right(t=1.0):
     """
     Drive the car forward and right for `t` seconds.
     """
@@ -73,7 +73,7 @@ def right(t=0.65):
     print("Driving right for {} seconds.".format(t))
     set_steering(-45.0)
     time.sleep(0.05)
-    set_throttle(90)
+    set_throttle(60)
     time.sleep(t)
     set_throttle(0)
 

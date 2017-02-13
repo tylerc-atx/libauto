@@ -38,7 +38,7 @@ def lab3():
     pass
 
 
-def lab4(distance_limit = 0.5):
+def lab4(distance_limit = 0.2, forward_step_time=0.15, sleep_time=0.3):
     """
     Demo the car avoiding obstacles using only the sonar sensor.
     """
@@ -54,8 +54,8 @@ def lab4(distance_limit = 0.5):
             current_distance = sonar.query_distance()
 
             while current_distance > distance_limit:
-                car.forward(0.1)
-                time.sleep(0.3)
+                car.forward(forward_step_time)
+                time.sleep(sleep_time)
                 current_distance = sonar.query_distance()
 
             car.reverse()
