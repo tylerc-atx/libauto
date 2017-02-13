@@ -45,6 +45,7 @@ def lab4(distance_limit = 0.5):
     import car
     from car import sonar
     import random
+    import time
 
     try:
 
@@ -54,6 +55,7 @@ def lab4(distance_limit = 0.5):
 
             while current_distance > distance_limit:
                 car.forward(0.1)
+                time.sleep(0.3)
                 current_distance = sonar.query_distance()
 
             car.reverse()
