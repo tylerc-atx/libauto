@@ -77,3 +77,58 @@ def right(t=0.65):
     time.sleep(t)
     set_throttle(0)
 
+
+def capture(num_frames=1):
+    """
+    Capture `num_frames` frames from the car's camera and return
+    them as a numpy ndarray.
+    """
+    import numpy as np
+
+    if 'CAMERA' not in globals():
+        global CAMERA
+        from car.camera import CameraRGB
+        CAMERA = CameraRGB()
+        print("Instantiated a camera object!")
+
+    if num_frames > 1:
+        frames = []
+        for i, frame in zip(range(num_frames), CAMERA.stream()):
+            frames.append(frame)
+        return np.array(frames)
+
+    else:
+        frame = CAMERA.capture()
+        return np.array([frame])
+
+
+def plot_frames(frames, **fig_kwargs):
+    """
+    Plot the given `frames` (a numpy ndarray) into a matplotlib figure,
+    returning the figure object which can be shown. If you call this
+    function from Jupyter, the figure object will be shown automatically!
+    """
+    import matplotlib.pyplot as plt
+    from math import sqrt
+
+    n = len(frames)
+    height = int(round(sqrt(float(n))))
+    width = n // height
+    if (n % height) > 0:
+        height += 1
+
+    if 'figsize' not in fig_kwargs:
+        fig_kwargs['figsize'] = (10, 10)
+    fig, axes = plt.subplots(width, height, **fig_kwargs)
+    try:
+        axes = axes.reshape((-1,))
+    except AttributeError:
+        # This ^^ exception happens when width=height=1.
+        axes = [axes]
+
+    for ax, frame in zip(axes, frames):
+        ax.imshow(frame)
+        ax.axis('off')
+
+    return fig
+
