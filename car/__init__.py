@@ -132,3 +132,24 @@ def plot_frames(frames, **fig_kwargs):
 
     return fig
 
+
+def classify_color(img):
+    """
+    Classify the center region of `img` as having either primarily "red",
+    "yellow", or "green, or none of those ("background").
+
+    The `img` parameter must be a numpy array containing an RGB image.
+
+    Returns a string representing the color found in the center of the
+    image, one of "red", "yellow", "green", or "background".
+    """
+
+    if 'COLORCLASSIFIER' not in globals():
+        global COLORCLASSIFIER
+        from car.models import ColorClassifier
+        COLORCLASSIFIER = ColorClassifier()
+        print("Instantiated a ColorClassifier object!")
+
+    p1, p2, classific, center_img = COLORCLASSIFIER.classify(img)
+    return classific
+
