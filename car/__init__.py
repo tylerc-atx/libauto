@@ -7,6 +7,7 @@ approval from AutoAuto, LLC.
 """
 
 from car import db
+import numpy as np
 import time
 import os
 
@@ -80,8 +81,6 @@ def capture(num_frames=1):
     Capture `num_frames` frames from the car's camera and return
     them as a numpy ndarray.
     """
-    import numpy as np
-
     if 'CAMERA' not in globals():
         global CAMERA
         from car.camera import CameraRGB
@@ -113,9 +112,9 @@ def plot(frames, **fig_kwargs):
     from math import sqrt
 
     # Ensure the proper shape of `frames`.
-    if frames.ndims == 4:
+    if frames.ndim == 4:
         pass
-    elif frames.ndims == 3:
+    elif frames.ndim == 3:
         frames = np.expand_dims(frames, axis=0)
     else:
         raise Exception("invalid frames ndarray shape")
@@ -130,7 +129,7 @@ def plot(frames, **fig_kwargs):
 
     # Create the figure grid.
     if 'figsize' not in fig_kwargs:
-        fig_kwargs['figsize'] = (10, 10)
+        fig_kwargs['figsize'] = (5, 5) if n == 1 else (10, 10)
     fig, axes = plt.subplots(width, height, **fig_kwargs)
 
     # Ensure `axes` is a 1d iterable.
@@ -158,7 +157,6 @@ def classify_color(img):
     Returns a string representing the color found in the center of the
     image, one of "red", "yellow", "green", or "background".
     """
-
     if 'COLORCLASSIFIER' not in globals():
         global COLORCLASSIFIER
         from car.models import ColorClassifier

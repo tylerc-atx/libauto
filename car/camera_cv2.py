@@ -55,7 +55,7 @@ class CameraRGB:
         """
         while True:
             frame = self.capture()
-            if not frame:
+            if frame is None:
                 break
             yield frame
 
