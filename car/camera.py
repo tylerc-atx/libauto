@@ -49,3 +49,15 @@ class CameraRGB:
             self.array.truncate(0)
             yield frame
 
+    def close(self):
+        """
+        Release the resources held by this camera object.
+        """
+        self.camera.close()
+
+    def __del__(self):
+        """
+        Python destructor which calls `close()` on this object.
+        """
+        self.close()
+
