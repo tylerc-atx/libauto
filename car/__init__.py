@@ -7,6 +7,7 @@ approval from AutoAuto, LLC.
 """
 
 from car import db
+import time
 import os
 
 
@@ -19,7 +20,6 @@ def forward(t=1.0):
     """
     Drive the car forward for `t` seconds.
     """
-    import time
     from car.steering import set_steering
     from car.throttle import set_throttle
     print("Driving forward for {} seconds.".format(t))
@@ -34,7 +34,6 @@ def reverse(t=1.0):
     """
     Drive the car in reverse for `t` seconds.
     """
-    import time
     from car.steering import set_steering
     from car.throttle import set_throttle
     print("Driving in reverse for {} seconds.".format(t))
@@ -52,7 +51,6 @@ def left(t=1.0):
     """
     Drive the car forward and left for `t` seconds.
     """
-    import time
     from car.steering import set_steering
     from car.throttle import set_throttle
     print("Driving left for {} seconds.".format(t))
@@ -67,7 +65,6 @@ def right(t=1.0):
     """
     Drive the car forward and right for `t` seconds.
     """
-    import time
     from car.steering import set_steering
     from car.throttle import set_throttle
     print("Driving right for {} seconds.".format(t))
@@ -90,6 +87,7 @@ def capture(num_frames=1):
         from car.camera import CameraRGB
         CAMERA = CameraRGB()
         print("Instantiated a camera object!")
+        time.sleep(2.0)
 
     if num_frames > 1:
         frames = []
