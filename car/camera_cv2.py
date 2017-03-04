@@ -30,22 +30,8 @@ class CameraRGB:
         self.error = False
         self.frame = None
         self.cond = Condition()
-        self.thread = Thread(target=self._thread_main)
+        self.thread = Thread(target=_thread_main, args=(weakref.ref(self),))
         self.thread.start()
-
-    def _thread_main(self):
-        while not self.stop:
-            ret, img = self.camera.read()
-            if not ret:
-                self.error = True
-                break
-            img = cv2.resize(img, self.fsize)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            self.cond.acquire()
-            self.frame = img
-            self.cond.notifyAll()
-            self.cond.release()
-        self.camera.release()
 
     def capture(self):
         """
@@ -79,10 +65,29 @@ class CameraRGB:
         """
         self.stop = True
         self.thread.join()
+        self.camera.release()
 
     def __del__(self):
         """
         Python destructor which calls `close()` on this object.
         """
         self.close()
+
+
+def _thread_main(weak_cam):
+    """
+    Private function which acts as the thread-main.
+    Continuously reads frames from the cv2 interface.
+    """
+    while not weak_cam().stop:
+        ret, img = weak_cam().camera.read()
+        if not ret:
+            weak_cam().error = True
+            break
+        img = cv2.resize(img, weak_cam().fsize)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        weak_cam().cond.acquire()
+        weak_cam().frame = img
+        weak_cam().cond.notifyAll()
+        weak_cam().cond.release()
 
