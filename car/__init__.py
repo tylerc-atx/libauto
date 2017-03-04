@@ -93,14 +93,17 @@ def capture(num_frames=1):
         frames = []
         for i, frame in zip(range(num_frames), CAMERA.stream()):
             frames.append(frame)
-        return np.array(frames)
+        frames = np.array(frames)
+        print("Captured {} frames.".format(num_frames))
+        return frames
 
     else:
         frame = CAMERA.capture()
-        return np.array([frame])
+        print("Captured 1 frame.")
+        return frame
 
 
-def plot_frames(frames, **fig_kwargs):
+def plot(frames, **fig_kwargs):
     """
     Plot the given `frames` (a numpy ndarray) into a matplotlib figure,
     returning the figure object which can be shown. If you call this
@@ -109,21 +112,35 @@ def plot_frames(frames, **fig_kwargs):
     import matplotlib.pyplot as plt
     from math import sqrt
 
-    n = len(frames)
+    # Ensure the proper shape of `frames`.
+    if frames.ndims == 4:
+        pass
+    elif frames.ndims == 3:
+        frames = np.expand_dims(frames, axis=0)
+    else:
+        raise Exception("invalid frames ndarray shape")
+    print("Plotting the frames...")
+
+    # Compute the figure grid size (this will be (height x width) subplots).
+    n = frames.shape[0]
     height = int(round(sqrt(float(n))))
     width = n // height
     if (n % height) > 0:
         height += 1
 
+    # Create the figure grid.
     if 'figsize' not in fig_kwargs:
         fig_kwargs['figsize'] = (10, 10)
     fig, axes = plt.subplots(width, height, **fig_kwargs)
+
+    # Ensure `axes` is a 1d iterable.
     try:
-        axes = axes.reshape((-1,))
+        axes = axes.flatten()
     except AttributeError:
         # This ^^ exception happens when width=height=1.
         axes = [axes]
 
+    # Plot each frame into the grid.
     for ax, frame in zip(axes, frames):
         ax.imshow(frame)
         ax.axis('off')
