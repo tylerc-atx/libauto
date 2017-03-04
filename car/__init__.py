@@ -150,6 +150,6 @@ def classify_color(img):
         COLORCLASSIFIER = ColorClassifier()
         print("Instantiated a ColorClassifier object!")
 
-    p1, p2, classific, center_img = COLORCLASSIFIER.classify(img)
+    p1, p2, classific, center_img = COLORCLASSIFIER.classify(img, annotate=True)
     return classific
 

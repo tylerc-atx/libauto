@@ -6,6 +6,7 @@ Use of this library, in source or binary form, is prohibited without written
 approval from AutoAuto, LLC.
 """
 
+import cv2
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -41,7 +42,7 @@ class ColorClassifier(object):
         # Threshold for std deviation cutoff:
         self.std_thresh = np.array([20, 20, 20])
 
-    def classify(self, img):
+    def classify(self, img, annotate=False):
         """
         Classify one image's center region as having either primarily "red",
         "yellow", or "green, or none of those ("background").
@@ -84,5 +85,46 @@ class ColorClassifier(object):
             cosine_sims = cosine_similarity(center_mean, self.colors)[0]
             classific = self.color_names[np.argmax(cosine_sims)]
 
+        if annotate:
+            self._annotate(p1, p2, classific, img)
+
         return p1, p2, classific, center_img
+
+    def _annotate(self, p1, p2, classific, img):
+        """
+        Annotate the image by adding a box around the center region and
+        writing the classification on the image to show the result of
+        the color classification.
+        """
+        box_color = None
+        text = None
+        text_color = None
+
+        if   classific == 'green':
+            box_color = (0, 255, 0)
+            text = 'GREEN'
+            text_color = (0, 255, 0)
+
+        elif classific == 'yellow':
+            box_color = (255, 255, 0)
+            text = 'YELLOW'
+            text_color = (0, 0, 0)
+
+        elif classific == 'red':
+            box_color = (255, 0, 0)
+            text = 'RED'
+            text_color = (255, 0, 0)
+
+        elif classific == 'background':
+            box_color = (0, 0, 0)
+            text = 'background'
+            text_color = (0, 0, 0)
+
+        else:
+            box_color = (204, 204, 204)
+
+        if box_color:
+            cv2.rectangle(img, p1, p2, box_color, 3)
+        if text and text_color:
+            cv2.putText(img, text, p1, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2)
 
