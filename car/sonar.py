@@ -1,9 +1,16 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
+"""
+This module exposes an interface to the sonar sound distance sensor. It allows
+for querying the sensor and for calibrating it (which is a one-time thing).
 """
 
 from car import STORE

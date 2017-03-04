@@ -1,10 +1,12 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
-
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
-"""
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
 """
 This module is an adapter for the GPIO interface of whatever SBC you are using.

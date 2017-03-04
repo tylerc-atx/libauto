@@ -1,9 +1,16 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
+"""
+This modules provides camera class abstractions which use the `picamera`
+library internally.
 """
 
 from picamera import PiCamera

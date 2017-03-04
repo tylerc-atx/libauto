@@ -1,9 +1,19 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
+"""
+This module contains a simple sqlite-backed key-value store for persisting
+settings of the individual car. A few examples of things stored in this
+key-value store:
+    - GPIO pin indexes for the various sensors and actuators
+    - calibration settings for various components
 """
 
 import sqlite3

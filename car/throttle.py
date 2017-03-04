@@ -1,9 +1,17 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
+"""
+This module handles the throttle of the car. It allows for setting
+the throttle of the car in the range [-100, 100], and it allows for
+calibrating the throttle as well (which should be a one-time thing).
 """
 
 from car import STORE

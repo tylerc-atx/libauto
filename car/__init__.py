@@ -1,9 +1,26 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
+"""
+This module provides easy helper functions which abstract the behavior of
+the car to a very high level. These functions are intended to be used by
+beginners. All of the functionality in these helper functions can be
+recreated using lower-level abstractions exposed by the other modules of
+this library.
+
+These helper functions, when invoked, each print info about what they are
+doing. Normally a library should _not_ print anything, but we make an
+exception for these functions because they are intended to be used by
+beginners who are new to programming, and the printouts are helpful for
+the beginners to see what is happening. The other modules of this library
+do not print.
 """
 
 from car import db

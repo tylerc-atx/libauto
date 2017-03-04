@@ -1,17 +1,20 @@
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
+
 """
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+This module is an adapter for the specific camera you are using.
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
-"""
+If you're using a Raspberry Pi, this module will internally use the `picamera`
+library.
 
-"""
-This module is an adapter for the specific camera you use on your SBC.
-
-If you're using a Raspberry Pi, this module will internally use the `picamera` library.
-
-Else it will use OpenCV as a fallback for capturing frames.
+Else, it will use OpenCV for capturing frames.
 """
 
 try:

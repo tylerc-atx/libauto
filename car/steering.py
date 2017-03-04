@@ -1,9 +1,17 @@
-"""
-Copyright (c) 2017 AutoAuto, LLC
-ALL RIGHTS RESERVED
+###############################################################################
+#
+# Copyright (c) 2017 AutoAuto, LLC
+# ALL RIGHTS RESERVED
+#
+# Use of this library, in source or binary form, is prohibited without written
+# approval from AutoAuto, LLC.
+#
+###############################################################################
 
-Use of this library, in source or binary form, is prohibited without written
-approval from AutoAuto, LLC.
+"""
+This module handles the steering of the car. It allows for setting
+the steering of the car in the range [-45, 45], and it allows for
+calibrating the steering as well (which should be a one-time thing).
 """
 
 from car import STORE
