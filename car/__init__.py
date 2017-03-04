@@ -157,8 +157,10 @@ def plot(frames, **fig_kwargs):
         axes = [axes]
 
     # Plot each frame into the grid.
-    for ax, frame in zip(axes, frames):
-        ax.imshow(frame)
+    from itertools import zip_longest
+    for ax, frame in zip_longest(axes, frames):
+        if frame is not None:
+            ax.imshow(frame)
         ax.axis('off')
 
     return fig
