@@ -15,12 +15,15 @@ easier interfaces which abstract the underlying algorithms and only expose
 the resulting desired behaviors.
 """
 
+__all__ = ['ColorClassifier']
+
+
 import cv2
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-class ColorClassifier(object):
+class ColorClassifier:
     """
     This class processes images and classifies the color which appears in the
     center region of each image. It classifies the center region as containing

@@ -14,6 +14,9 @@ the steering of the car in the range [-45, 45], and it allows for
 calibrating the steering as well (which should be a one-time thing).
 """
 
+__all__ = ['set_steering']
+
+
 from car import STORE
 from car.gpio import setup_pwm_on_pin, set_pin_pwm_value
 

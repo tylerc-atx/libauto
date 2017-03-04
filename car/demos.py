@@ -13,6 +13,8 @@ This module contains solutions to many of the AutoAuto labs. These make it
 easy for the instructor to show demos of the labs.
 """
 
+__all__ = ['lab1', 'lab2', 'lab3', 'lab4']
+
 
 def lab1():
     """

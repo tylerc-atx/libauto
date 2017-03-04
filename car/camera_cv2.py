@@ -12,6 +12,9 @@
 This modules provides camera class abstractions which use OpenCV internally.
 """
 
+__all__ = ['CameraRGB']
+
+
 import cv2
 import weakref
 import numpy as np

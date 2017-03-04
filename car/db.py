@@ -16,6 +16,9 @@ key-value store:
     - calibration settings for various components
 """
 
+__all__ = ['KeyValueStore']
+
+
 import sqlite3
 
 

@@ -23,6 +23,10 @@ the beginners to see what is happening. The other modules of this library
 do not print.
 """
 
+__all__ = ['forward', 'reverse', 'left', 'right',
+           'capture', 'plot', 'classify_color']
+
+
 from car import db
 import numpy as np
 import time

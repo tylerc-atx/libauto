@@ -17,6 +17,9 @@ library.
 Else, it will use OpenCV for capturing frames.
 """
 
+__all__ = ['CameraRGB']
+
+
 try:
     from car.camera_pi import CameraRGB
 except ImportError:

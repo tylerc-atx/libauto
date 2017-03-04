@@ -16,6 +16,11 @@ and all `pin_index` parameters in this module use the Broadcom GPIO pin numberin
 (aka, the _BCM_ pin numbers). See: https://pinout.xyz/
 """
 
+__all__ = ['setup_pwm_on_pin', 'setup_output_on_pin', 'setup_input_on_pin'
+           'set_pin_pwm_value', 'set_output_pin_value', 'query_input_pin',
+           'delay_micros', 'query_micros']
+
+
 import os
 os.environ['WIRINGPI_GPIOMEM'] = "1"
 import wiringpi as wpi

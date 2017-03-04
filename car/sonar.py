@@ -13,6 +13,9 @@ This module exposes an interface to the sonar sound distance sensor. It allows
 for querying the sensor and for calibrating it (which is a one-time thing).
 """
 
+__all__ = ['echo_time', 'query_distance']
+
+
 from car import STORE
 from car.gpio import (setup_output_on_pin,
                       setup_input_on_pin,

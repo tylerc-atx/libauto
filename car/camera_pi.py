@@ -13,6 +13,9 @@ This modules provides camera class abstractions which use the `picamera`
 library internally.
 """
 
+__all__ = ['CameraRGB']
+
+
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 

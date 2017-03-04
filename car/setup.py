@@ -13,6 +13,9 @@ This module bundles the pin-setting and calibration steps together for easy
 execution of all steps.
 """
 
+__all__ = ['set_pins', 'calibrate']
+
+
 from car import throttle
 from car import steering
 from car import sonar
