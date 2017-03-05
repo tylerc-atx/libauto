@@ -120,7 +120,6 @@ def capture(num_frames=1):
         from car.camera import CameraRGB
         CAMERA = CameraRGB()
         print("Instantiated a camera object!")
-        time.sleep(2.0)
 
     if num_frames > 1:
         frames = []

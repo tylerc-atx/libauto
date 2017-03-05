@@ -18,6 +18,7 @@ __all__ = ['CameraRGB']
 
 from picamera import PiCamera
 from picamera.array import PiRGBArray
+import time
 
 
 class CameraRGB:
@@ -32,6 +33,7 @@ class CameraRGB:
         """
         self.camera = PiCamera(resolution=(width, height), framerate=fps)
         self.array = PiRGBArray(self.camera, size=(width, height))
+        time.sleep(2.0)
 
     def capture(self):
         """

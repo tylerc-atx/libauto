@@ -16,6 +16,7 @@ __all__ = ['CameraRGB']
 
 
 import cv2
+import time
 import weakref
 import numpy as np
 from threading import Thread, Condition
@@ -88,6 +89,7 @@ def _thread_main(weak_cam):
     Private function which acts as the thread-main.
     Continuously reads frames from the cv2 interface.
     """
+    time.sleep(2.0)
     while not weak_cam().stop:
         ret, img = weak_cam().camera.read()
         if not ret:
