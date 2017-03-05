@@ -98,11 +98,11 @@ class ColorClassifier:
             classific = self.color_names[np.argmax(cosine_sims)]
 
         if annotate:
-            self._annotate(p1, p2, classific, img)
+            self.annotate(p1, p2, classific, img)
 
-        return p1, p2, classific, center_img
+        return p1, p2, classific
 
-    def _annotate(self, p1, p2, classific, img):
+    def annotate(self, p1, p2, classific, img):
         """
         Annotate the image by adding a box around the center region and
         writing the classification on the image to show the result of
