@@ -15,7 +15,7 @@ easier interfaces which abstract the underlying algorithms and only expose
 the resulting desired behaviors.
 """
 
-__all__ = ['ColorClassifier', 'FaceDetector']
+__all__ = ['ColorClassifier', 'FaceDetector', 'StopSignDetector']
 
 
 import os
@@ -143,30 +143,27 @@ class ColorClassifier:
             cv2.putText(frame, text, p1, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2)
 
 
-class FaceDetector:
+class CascadeObjectDetector:
     """
-    This class detects human faces in images.
+    This is the base-class for the cascade object detector classes which follow
+    in this file.
+    Two example sub-classes are `FaceDetector` and `StopSignDetector`.
     """
 
-    def __init__(self, custom_cascade_file=None):
+    def __init__(self, cascade_file_path):
         """
-        Build a face detector object.
+        Build a cascade object detector object.
         """
-        if custom_cascade_file:
-            filepath = custom_cascade_file
-        else:
-            filepath = os.path.join(CURR_DIR,
-                    "resources/cascades/haarcascade_frontalface_alt.xml")
-        self.face_cascade = cv2.CascadeClassifier(filepath)
+        self.cascade = cv2.CascadeClassifier(cascade_file_path)
 
     def detect(self, frame, annotate=False):
         """
-        Detect human faces inside of the image `frame`.
+        Detect objects inside of the image `frame`.
 
         The `frame` parameter must be an image as a numpy array either containing
         3-channel RGB values _or_ 1-channel gray values.
 
-        Returns a list of faces, where each face is a 4-tuple of:
+        Returns a list of rectangles, where each rectangles is a 4-tuple of:
             (x, y, width, height)
         """
 
@@ -184,36 +181,67 @@ class FaceDetector:
             raise Exception("invalid frame.ndim")
 
         # Call the OpenCV cascade.
-        faces = self.face_cascade.detectMultiScale(frame_gray,
+        rectangles = self.cascade.detectMultiScale(frame_gray,
                                                    scaleFactor=1.1,
                                                    minNeighbors=3,
                                                    minSize=(45, 45),
                                                    flags = cv2.CASCADE_SCALE_IMAGE)
 
-        # `faces` is a numpy ndarray, but we'd like it to be a list of tuples.
-        faces = [tuple(row) for row in faces]
+        # `rectangles` is a numpy ndarray, but we'd like it to be a list of tuples.
+        rectangles = [tuple(rect) for rect in rectangles]
 
         # Annotate it if the user so desires.
         if annotate:
-            self.annotate(frame, faces)
+            self.annotate(frame, rectangles)
 
-        return faces
+        return rectangles
 
-    def annotate(self, frame, faces):
+    def annotate(self, frame, rectangles):
         """
-        Annotate the image by adding boxes and "human" labels around the faces.
+        Annotate the image by adding boxes and labels around the detected
+        objects inside of `frame`.
         """
-        face_color = [255, 255, 255]
-        face_line_thickness = 3
+        box_color = [255, 255, 255]
+        box_line_thickness = 3
         text_color = [255, 255, 255]
 
-        for x_face, y_face, w_face, h_face in faces:
+        for x, y, width, height in rectangles:
 
             cv2.rectangle(frame,
-                          (x_face,          y_face),
-                          (x_face + w_face, y_face + h_face),
-                          face_color, face_line_thickness)
+                          (x,          y),
+                          (x + width, y + height),
+                          box_color, box_line_thickness)
 
-            cv2.putText(frame, "HUMAN", (x_face, y_face), cv2.FONT_HERSHEY_SIMPLEX,
+            cv2.putText(frame, "HUMAN", (x, y), cv2.FONT_HERSHEY_SIMPLEX,
                         1, text_color, 2)
+
+
+class FaceDetector(CascadeObjectDetector):
+    """
+    This class detects human faces in images.
+    """
+
+    def __init__(self, cascade_file_path=None):
+        """
+        Build a face detector object.
+        """
+        if cascade_file_path is None:
+            cascade_file_path = os.path.join(CURR_DIR,
+                    "resources/cascades/haarcascade_frontalface_alt.xml")
+        super().__init__(cascade_file_path)
+
+
+class StopSignDetector(CascadeObjectDetector):
+    """
+    This class detects stop signs in images.
+    """
+
+    def __init__(self, cascade_file_path=None):
+        """
+        Build a stop sign detector object.
+        """
+        if cascade_file_path is None:
+            cascade_file_path = os.path.join(CURR_DIR,
+                    "resources/cascades/stop_sign.xml")
+        super().__init__(cascade_file_path)
 

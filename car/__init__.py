@@ -24,7 +24,8 @@ do not print.
 """
 
 __all__ = ['forward', 'reverse', 'left', 'right',
-           'capture', 'plot', 'classify_color', 'detect_faces']
+           'capture', 'plot', 'classify_color',
+           'detect_faces', 'detect_stop_signs']
 
 
 from car import db
@@ -238,4 +239,26 @@ def detect_faces(frame):
     n = len(faces)
     print("Found {} face{}.".format(n, 's' if n>1 else ''))
     return faces
+
+
+def detect_stop_signs(frame):
+    """
+    Detect stop signs inside of `frame`, and annotate each stop sign.
+
+    The `frame` parameter must be an image as a numpy array either containing
+    3-channel RGB values _or_ 1-channel gray values.
+
+    Returns a list of rectangles, where each rectangle is a 4-tuple of:
+        (x, y, width, height)
+    """
+    if 'STOPSIGNDETECTOR' not in globals():
+        global STOPSIGNDETECTOR
+        from car.models import StopSignDetector
+        STOPSIGNDETECTOR = StopSignDetector()
+        print("Instantiated a StopSignDetector object!")
+
+    rects = STOPSIGNDETECTOR.detect(frame, annotate=True)
+    n = len(rects)
+    print("Found {} stop sign{}.".format(n, 's' if n>1 else ''))
+    return rects
 
