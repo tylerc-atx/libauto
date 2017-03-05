@@ -22,7 +22,7 @@ __all__ = ['KeyValueStore']
 import sqlite3
 
 
-class KeyValueStore(object):
+class KeyValueStore:
     """
     This class uses sqlite to persist a simple and flexible key-value store.
     """

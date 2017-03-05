@@ -30,6 +30,7 @@ __all__ = ['forward', 'reverse', 'left', 'right',
 from car import db
 import numpy as np
 import time
+import cv2
 import os
 
 
@@ -140,6 +141,14 @@ def plot(frames, **fig_kwargs):
     Plot the given `frames` (a numpy ndarray) into a matplotlib figure,
     returning the figure object which can be shown. If you call this
     function from Jupyter, the figure object will be shown automatically!
+
+    The `frames` parameter must be a numpy ndarray with one of the
+    following shapes:
+        - (n, h, w, 3)   meaning `n` 3-channel RGB images of size `w`x`h`
+        - (n, h, w, 1)   meaning `n` 1-channel gray images of size `w`x`h`
+        -    (h, w, 3)   meaning a single 3-channel RGB image of size `w`x`h`
+        -    (h, w, 1)   meaning a single 1-channel gray image of size `w`x`h`
+        -    (h, w)      meaning a single 1-channel gray image of size `w`x`h`
     """
     import matplotlib.pyplot as plt
     from math import sqrt
@@ -149,16 +158,21 @@ def plot(frames, **fig_kwargs):
         pass
     elif frames.ndim == 3:
         frames = np.expand_dims(frames, axis=0)
+    elif frames.ndim == 2:
+        frames = np.expand_dims(frames, axis=2)
+        frames = np.expand_dims(frames, axis=0)
     else:
         raise Exception("invalid frames ndarray shape")
-    print("Plotting the frames...")
+    if frames.shape[3] != 3 and frames.shape[3] != 1:
+        raise Exception("invalid number of channels")
 
     # Compute the figure grid size (this will be (height x width) subplots).
     n = frames.shape[0]
-    height = int(round(sqrt(float(n))))
-    width = n // height
-    if (n % height) > 0:
+    width = int(round(sqrt(float(n))))
+    height = n // width
+    if (n % width) > 0:
         height += 1
+    print("Plotting {} frame{}...".format(n, 's' if n > 1 else ''))
 
     # Create the figure grid.
     if 'figsize' not in fig_kwargs:
@@ -176,6 +190,8 @@ def plot(frames, **fig_kwargs):
     from itertools import zip_longest
     for ax, frame in zip_longest(axes, frames):
         if frame is not None:
+            if frame.shape[2] == 1:
+                frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
             ax.imshow(frame)
         ax.axis('off')
 
@@ -199,6 +215,7 @@ def classify_color(img):
         print("Instantiated a ColorClassifier object!")
 
     p1, p2, classific = COLORCLASSIFIER.classify(img, annotate=True)
+    print("Classified color as '{}'.".format(classific))
     return classific
 
 
@@ -219,5 +236,7 @@ def detect_faces(img):
         print("Instantiated a FaceDetector object!")
 
     faces = FACEDETECTOR.detect(img, annotate=True)
+    n = len(faces)
+    print("Found {} face{}.".format(n, 's' if n>1 else ''))
     return faces
 
