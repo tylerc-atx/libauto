@@ -15,11 +15,13 @@ easier interfaces which abstract the underlying algorithms and only expose
 the resulting desired behaviors.
 """
 
-__all__ = ['ColorClassifier']
+__all__ = ['ColorClassifier', 'FaceDetector']
 
 
+import os
 import cv2
 import numpy as np
+from car import CURR_DIR
 from sklearn.metrics.pairwise import cosine_similarity
 
 
@@ -139,4 +141,79 @@ class ColorClassifier:
             cv2.rectangle(img, p1, p2, box_color, 3)
         if text and text_color:
             cv2.putText(img, text, p1, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2)
+
+
+class FaceDetector:
+    """
+    This class detects human faces in images.
+    """
+
+    def __init__(self, custom_cascade_file=None):
+        """
+        Build a face detector object.
+        """
+        if custom_cascade_file:
+            filepath = custom_cascade_file
+        else:
+            filepath = os.path.join(CURR_DIR,
+                    "resources/cascades/haarcascade_frontalface_alt.xml")
+        self.face_cascade = cv2.CascadeClassifier(filepath)
+
+    def detect(self, img, annotate=False):
+        """
+        Detect human faces inside of the image `img`.
+
+        The `img` parameter must be a numpy array either containing 3-channel
+        RGB values _or_ 1-channel gray values.
+
+        Returns a list of faces, where each face is a 4-tuple of:
+            (x, y, width, height)
+        """
+
+        # Get a gray image of the proper shape:
+        if img.ndim == 3:
+            if img.shape[2] == 3:
+                img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            elif img.shape[2] == 1:
+                img_gray = np.squeeze(img, axis=(2,))
+            else:
+                raise Exception("invalid number of color channels")
+        elif img.ndim == 2:
+            img_gray = img
+        else:
+            raise Exception("invalid img.ndim")
+
+        # Call the OpenCV cascade.
+        faces = self.face_cascade.detectMultiScale(img_gray,
+                                                   scaleFactor=1.1,
+                                                   minNeighbors=3,
+                                                   minSize=(45, 45),
+                                                   flags = cv2.CASCADE_SCALE_IMAGE)
+
+        # `faces` is a numpy ndarray, but we'd like it to be a list of tuples.
+        faces = [tuple(row) for row in faces]
+
+        # Annotate it if the user so desires.
+        if annotate:
+            self.annotate(img, faces)
+
+        return faces
+
+    def annotate(self, img, faces):
+        """
+        Annotate the image by adding boxes and "human" labels around the faces.
+        """
+        face_color = [255, 255, 255]
+        face_line_thickness = 3
+        text_color = [255, 255, 255]
+
+        for x_face, y_face, w_face, h_face in faces:
+
+            cv2.rectangle(img,
+                          (x_face,          y_face),
+                          (x_face + w_face, y_face + h_face),
+                          face_color, face_line_thickness)
+
+            cv2.putText(img, "HUMAN", (x_face, y_face), cv2.FONT_HERSHEY_SIMPLEX,
+                        1, text_color, 2)
 

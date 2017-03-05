@@ -24,7 +24,7 @@ do not print.
 """
 
 __all__ = ['forward', 'reverse', 'left', 'right',
-           'capture', 'plot', 'classify_color']
+           'capture', 'plot', 'classify_color', 'detect_faces']
 
 
 from car import db
@@ -200,4 +200,24 @@ def classify_color(img):
 
     p1, p2, classific = COLORCLASSIFIER.classify(img, annotate=True)
     return classific
+
+
+def detect_faces(img):
+    """
+    Detect faces inside of `img`, and annotate each face.
+
+    The `img` parameter must be a numpy array either containing 3-channel
+    RGB values _or_ 1-channel gray values.
+
+    Returns a list of faces, where each face is a 4-tuple of:
+        (x, y, width, height)
+    """
+    if 'FACEDETECTOR' not in globals():
+        global FACEDETECTOR
+        from car.models import FaceDetector
+        FACEDETECTOR = FaceDetector()
+        print("Instantiated a FaceDetector object!")
+
+    faces = FACEDETECTOR.detect(img, annotate=True)
+    return faces
 
