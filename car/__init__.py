@@ -197,12 +197,12 @@ def plot(frames, **fig_kwargs):
     return fig
 
 
-def classify_color(img):
+def classify_color(frame):
     """
-    Classify the center region of `img` as having either primarily "red",
+    Classify the center region of `frame` as having either primarily "red",
     "yellow", or "green, or none of those ("background").
 
-    The `img` parameter must be a numpy array containing an RGB image.
+    The `frame` parameter must be a numpy array containing an RGB image.
 
     Returns a string representing the color found in the center of the
     image, one of "red", "yellow", "green", or "background".
@@ -213,17 +213,17 @@ def classify_color(img):
         COLORCLASSIFIER = ColorClassifier()
         print("Instantiated a ColorClassifier object!")
 
-    p1, p2, classific = COLORCLASSIFIER.classify(img, annotate=True)
+    p1, p2, classific = COLORCLASSIFIER.classify(frame, annotate=True)
     print("Classified color as '{}'.".format(classific))
     return classific
 
 
-def detect_faces(img):
+def detect_faces(frame):
     """
-    Detect faces inside of `img`, and annotate each face.
+    Detect faces inside of `frame`, and annotate each face.
 
-    The `img` parameter must be a numpy array either containing 3-channel
-    RGB values _or_ 1-channel gray values.
+    The `frame` parameter must be an image as a numpy array either containing
+    3-channel RGB values _or_ 1-channel gray values.
 
     Returns a list of faces, where each face is a 4-tuple of:
         (x, y, width, height)
@@ -234,7 +234,7 @@ def detect_faces(img):
         FACEDETECTOR = FaceDetector()
         print("Instantiated a FaceDetector object!")
 
-    faces = FACEDETECTOR.detect(img, annotate=True)
+    faces = FACEDETECTOR.detect(frame, annotate=True)
     n = len(faces)
     print("Found {} face{}.".format(n, 's' if n>1 else ''))
     return faces

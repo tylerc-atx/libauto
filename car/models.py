@@ -56,22 +56,22 @@ class ColorClassifier:
         # Threshold for std deviation cutoff:
         self.std_thresh = np.array([20, 20, 20])
 
-    def classify(self, img, annotate=False):
+    def classify(self, frame, annotate=False):
         """
         Classify one image's center region as having either primarily "red",
         "yellow", or "green, or none of those ("background").
 
-        The `img` parameter must be a numpy array containing an RGB image.
+        The `frame` parameter must be a numpy array containing an RGB image.
 
-        Returns a tuple of the form (`p1`, `p2`, `classific`, `center_img`).
+        Returns a tuple of the form (`p1`, `p2`, `classific`).
         """
 
-        # Check `img` for correct shape. It should be an 3-channel, 2d image.
-        if len(img.shape) != 3 or img.shape[2] != 3:
-            raise Exception("incorrect img shape: Please input an RGB image.")
+        # Check `frame` for correct shape. It should be an 3-channel, 2d image.
+        if len(frame.shape) != 3 or frame.shape[2] != 3:
+            raise Exception("incorrect frame shape: Please input an RGB image.")
 
-        # Define the center region of `img`.
-        height, width = img.shape[0], img.shape[1]
+        # Define the center region of `frame`.
+        height, width = frame.shape[0], frame.shape[1]
         y_center      = height/2
         x_center      = width/2
         p1 = int(x_center - (width  * self.center_region_width)/2), \
@@ -80,11 +80,11 @@ class ColorClassifier:
              int(y_center + (height * self.center_region_height)/2)
 
         # Crop the center region.
-        center_img = img[ p1[1]:p2[1], p1[0]:p2[0] ]
+        center_frame = frame[ p1[1]:p2[1], p1[0]:p2[0] ]
 
-        # Get mean and std dev values of the pixels in `center_img`.
-        h, w, p = center_img.shape
-        center_reshaped = center_img.reshape((h*w, p))
+        # Get mean and std dev values of the pixels in `center_frame`.
+        h, w, p = center_frame.shape
+        center_reshaped = center_frame.reshape((h*w, p))
         center_mean = np.average(center_reshaped, axis=0).reshape(1, -1)
         center_std = np.std(center_reshaped, axis=0)
 
@@ -100,11 +100,11 @@ class ColorClassifier:
             classific = self.color_names[np.argmax(cosine_sims)]
 
         if annotate:
-            self.annotate(p1, p2, classific, img)
+            self.annotate(p1, p2, classific, frame)
 
         return p1, p2, classific
 
-    def annotate(self, p1, p2, classific, img):
+    def annotate(self, p1, p2, classific, frame):
         """
         Annotate the image by adding a box around the center region and
         writing the classification on the image to show the result of
@@ -138,9 +138,9 @@ class ColorClassifier:
             box_color = (204, 204, 204)
 
         if box_color:
-            cv2.rectangle(img, p1, p2, box_color, 3)
+            cv2.rectangle(frame, p1, p2, box_color, 3)
         if text and text_color:
-            cv2.putText(img, text, p1, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2)
+            cv2.putText(frame, text, p1, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2)
 
 
 class FaceDetector:
@@ -159,32 +159,32 @@ class FaceDetector:
                     "resources/cascades/haarcascade_frontalface_alt.xml")
         self.face_cascade = cv2.CascadeClassifier(filepath)
 
-    def detect(self, img, annotate=False):
+    def detect(self, frame, annotate=False):
         """
-        Detect human faces inside of the image `img`.
+        Detect human faces inside of the image `frame`.
 
-        The `img` parameter must be a numpy array either containing 3-channel
-        RGB values _or_ 1-channel gray values.
+        The `frame` parameter must be an image as a numpy array either containing
+        3-channel RGB values _or_ 1-channel gray values.
 
         Returns a list of faces, where each face is a 4-tuple of:
             (x, y, width, height)
         """
 
         # Get a gray image of the proper shape:
-        if img.ndim == 3:
-            if img.shape[2] == 3:
-                img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-            elif img.shape[2] == 1:
-                img_gray = np.squeeze(img, axis=(2,))
+        if frame.ndim == 3:
+            if frame.shape[2] == 3:
+                frame_gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+            elif frame.shape[2] == 1:
+                frame_gray = np.squeeze(frame, axis=(2,))
             else:
                 raise Exception("invalid number of color channels")
-        elif img.ndim == 2:
-            img_gray = img
+        elif frame.ndim == 2:
+            frame_gray = frame
         else:
-            raise Exception("invalid img.ndim")
+            raise Exception("invalid frame.ndim")
 
         # Call the OpenCV cascade.
-        faces = self.face_cascade.detectMultiScale(img_gray,
+        faces = self.face_cascade.detectMultiScale(frame_gray,
                                                    scaleFactor=1.1,
                                                    minNeighbors=3,
                                                    minSize=(45, 45),
@@ -195,11 +195,11 @@ class FaceDetector:
 
         # Annotate it if the user so desires.
         if annotate:
-            self.annotate(img, faces)
+            self.annotate(frame, faces)
 
         return faces
 
-    def annotate(self, img, faces):
+    def annotate(self, frame, faces):
         """
         Annotate the image by adding boxes and "human" labels around the faces.
         """
@@ -209,11 +209,11 @@ class FaceDetector:
 
         for x_face, y_face, w_face, h_face in faces:
 
-            cv2.rectangle(img,
+            cv2.rectangle(frame,
                           (x_face,          y_face),
                           (x_face + w_face, y_face + h_face),
                           face_color, face_line_thickness)
 
-            cv2.putText(img, "HUMAN", (x_face, y_face), cv2.FONT_HERSHEY_SIMPLEX,
+            cv2.putText(frame, "HUMAN", (x_face, y_face), cv2.FONT_HERSHEY_SIMPLEX,
                         1, text_color, 2)
 

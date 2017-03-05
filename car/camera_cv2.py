@@ -91,14 +91,14 @@ def _thread_main(weak_cam):
     """
     time.sleep(2.0)
     while not weak_cam().stop:
-        ret, img = weak_cam().camera.read()
+        ret, frame = weak_cam().camera.read()
         if not ret:
             weak_cam().error = True
             break
-        img = cv2.resize(img, weak_cam().fsize)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        frame = cv2.resize(frame, weak_cam().fsize)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         weak_cam().cond.acquire()
-        weak_cam().frame = img
+        weak_cam().frame = frame
         weak_cam().cond.notifyAll()
         weak_cam().cond.release()
 
