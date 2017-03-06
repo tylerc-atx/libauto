@@ -36,7 +36,16 @@ class ColorClassifier:
       - "background"  <-- the center of the image appears to be a mix of colors
     """
 
-    def __init__(self, center_region_width=0.25, center_region_height=0.25):
+    DEFAULT_COLORS = np.array([[  255,   0, 0],    # red
+                               [  255, 255, 0],    # yellow
+                               [    0, 255, 0]])   # green
+
+    DEFAULT_STD_THRESH = np.array([20, 20, 20])
+
+    def __init__(self, center_region_width=0.25,
+                       center_region_height=0.25,
+                       colors=DEFAULT_COLORS,
+                       std_thresh=DEFAULT_STD_THRESH):
         """
         Build a color classifier object which looks at the center region of
         an image and determines if it contains primarily either "red", "yellow",
@@ -48,13 +57,11 @@ class ColorClassifier:
         self.center_region_height = center_region_height
 
         # Colors as canonical vectors [R,G,B]:
-        self.colors = np.array([[  255,   0, 0],
-                                [  255, 255, 0],
-                                [    0, 255, 0]])
+        self.colors = colors
         self.color_names = ['red', 'yellow', 'green']
 
         # Threshold for std deviation cutoff:
-        self.std_thresh = np.array([20, 20, 20])
+        self.std_thresh = std_thresh
 
     def classify(self, frame, annotate=False):
         """
