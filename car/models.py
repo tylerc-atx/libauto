@@ -37,9 +37,10 @@ class ColorClassifier:
       - "background"  <-- the center of the image appears to be a mix of colors
     """
 
-    DEFAULT_COLORS = np.array([[  255,   0, 0],    # red
-                               [  255, 255, 0],    # yellow
-                               [    0, 255, 0]])   # green
+    # Canonical colors: ordered: red, yellow, green
+    DEFAULT_COLORS = np.array([[160,  50, 50],
+                               [180, 120,  0],
+                               [ 50, 180,  0]])
 
     DEFAULT_STD_THRESH = np.array([20, 20, 20])
 
@@ -64,7 +65,7 @@ class ColorClassifier:
         # Threshold for std deviation cutoff:
         self.std_thresh = std_thresh
 
-    def classify(self, frame, annotate=False):
+    def classify(self, frame, annotate=False, print_debug=False):
         """
         Classify one image's center region as having either primarily "red",
         "yellow", or "green, or none of those ("background").
@@ -95,6 +96,9 @@ class ColorClassifier:
         center_reshaped = center_frame.reshape((h*w, p))
         center_mean = np.average(center_reshaped, axis=0).reshape(1, -1)
         center_std = np.std(center_reshaped, axis=0)
+        if print_debug:
+            print(center_mean)
+            print(center_std)
 
         # Assume the image is just background when all channels have "too big" of
         # standard deviation.
