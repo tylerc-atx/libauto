@@ -36,5 +36,6 @@ def calibrate():
     """
     throttle._calibrate_esc()
     steering._calibrate_steering()
+    throttle._calibrate_safe_speed()
     sonar._calibrate_sonar()
 

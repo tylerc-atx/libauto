@@ -25,6 +25,8 @@ THROTTLE_PIN                = STORE.get('THROTTLE_PIN',                24)
 THROTTLE_ZERO_VALUE         = STORE.get('THROTTLE_ZERO_VALUE',         15.0)
 THROTTLE_FULL_FORWARD_VALUE = STORE.get('THROTTLE_FULL_FORWARD_VALUE', 20.0)
 THROTTLE_FULL_REVERSE_VALUE = STORE.get('THROTTLE_FULL_REVERSE_VALUE', 10.0)
+THROTTLE_SAFE_FORWARD_VALUE = STORE.get('THROTTLE_SAFE_FORWARD_VALUE', 55)
+THROTTLE_SAFE_REVERSE_VALUE = STORE.get('THROTTLE_SAFE_REVERSE_VALUE', -55)
 
 
 setup_pwm_on_pin(THROTTLE_PIN)
@@ -104,4 +106,29 @@ def _calibrate_esc():
     set_pin_pwm_value(PIN, MID)
 
     _ = input("In neutral, press enter to exit.")
+
+
+def _calibrate_safe_speed():
+    """
+    Ask the user repeatedly to enter a throttle value in [0, 100] until the
+    car drives at a safe speed for kids.
+    """
+
+    global THROTTLE_SAFE_FORWARD_VALUE, THROTTLE_SAFE_REVERSE_VALUE
+    from car import forward, left, right
+
+    while True:
+
+        THROTTLE_SAFE_FORWARD_VALUE = int(input("Throttle safe forward value [0, 100]: "))
+        THROTTLE_SAFE_REVERSE_VALUE = int(input("Throttle safe reverse value [0, -100]: "))
+
+        STORE.put('THROTTLE_SAFE_FORWARD_VALUE', THROTTLE_SAFE_FORWARD_VALUE)
+        STORE.put('THROTTLE_SAFE_REVERSE_VALUE', THROTTLE_SAFE_REVERSE_VALUE)
+
+        forward()
+        left()
+        right()
+
+        if input("Keep? [n/y] ") == 'y':
+            break
 

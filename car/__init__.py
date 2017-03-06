@@ -45,14 +45,14 @@ def forward(duration=1.0):
     Drive the car forward for `duration` seconds.
     """
     from car.steering import set_steering
-    from car.throttle import set_throttle
+    from car.throttle import set_throttle, THROTTLE_SAFE_FORWARD_VALUE
     if duration > 5.0:
         print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
     print("Driving forward for {} seconds.".format(duration))
     set_steering(0.0)
     time.sleep(0.05)
-    set_throttle(60)
+    set_throttle(THROTTLE_SAFE_FORWARD_VALUE)
     time.sleep(duration)
     set_throttle(0)
 
@@ -62,17 +62,17 @@ def reverse(duration=1.0):
     Drive the car in reverse for `duration` seconds.
     """
     from car.steering import set_steering
-    from car.throttle import set_throttle
+    from car.throttle import set_throttle, THROTTLE_SAFE_REVERSE_VALUE
     if duration > 5.0:
         print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
     print("Driving in reverse for {} seconds.".format(duration))
     set_steering(0.0)
-    set_throttle(-45)
+    set_throttle(THROTTLE_SAFE_REVERSE_VALUE)
     time.sleep(0.1)
     set_throttle(0)
-    time.sleep(0.05)
-    set_throttle(-60)
+    time.sleep(0.1)
+    set_throttle(THROTTLE_SAFE_REVERSE_VALUE)
     time.sleep(duration)
     set_throttle(0)
 
@@ -82,14 +82,14 @@ def left(duration=1.0):
     Drive the car forward and left for `duration` seconds.
     """
     from car.steering import set_steering
-    from car.throttle import set_throttle
+    from car.throttle import set_throttle, THROTTLE_SAFE_FORWARD_VALUE
     if duration > 5.0:
         print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
     print("Driving left for {} seconds.".format(duration))
     set_steering(45.0)
     time.sleep(0.05)
-    set_throttle(60)
+    set_throttle(THROTTLE_SAFE_FORWARD_VALUE)
     time.sleep(duration)
     set_throttle(0)
 
@@ -99,14 +99,14 @@ def right(duration=1.0):
     Drive the car forward and right for `duration` seconds.
     """
     from car.steering import set_steering
-    from car.throttle import set_throttle
+    from car.throttle import set_throttle, THROTTLE_SAFE_FORWARD_VALUE
     if duration > 5.0:
         print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
     print("Driving right for {} seconds.".format(duration))
     set_steering(-45.0)
     time.sleep(0.05)
-    set_throttle(60)
+    set_throttle(THROTTLE_SAFE_FORWARD_VALUE)
     time.sleep(duration)
     set_throttle(0)
 

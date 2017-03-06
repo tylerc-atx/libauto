@@ -68,7 +68,6 @@ def _calibrate_steering_helper(smin, smid, smax):
     forward()
     left()
     right()
-    forward()
 
 
 def _calibrate_steering():
