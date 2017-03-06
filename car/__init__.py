@@ -172,7 +172,7 @@ def plot(frames, **fig_kwargs):
     height = n // width
     if (n % width) > 0:
         height += 1
-    print("Plotting {} frame{}...".format(n, 's' if n > 1 else ''))
+    print("Plotting {} frame{}...".format(n, 's' if n != 1 else ''))
 
     # Create the figure grid.
     if 'figsize' not in fig_kwargs:
@@ -237,7 +237,7 @@ def detect_faces(frame):
 
     faces = FACEDETECTOR.detect(frame, annotate=True)
     n = len(faces)
-    print("Found {} face{}.".format(n, 's' if n>1 else ''))
+    print("Found {} face{}.".format(n, 's' if n != 1 else ''))
     return faces
 
 
@@ -259,6 +259,6 @@ def detect_stop_signs(frame):
 
     rects = STOPSIGNDETECTOR.detect(frame, annotate=True)
     n = len(rects)
-    print("Found {} stop sign{}.".format(n, 's' if n>1 else ''))
+    print("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
     return rects
 

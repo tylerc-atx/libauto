@@ -150,11 +150,29 @@ class CascadeObjectDetector:
     Two example sub-classes are `FaceDetector` and `StopSignDetector`.
     """
 
-    def __init__(self, cascade_file_path):
+    def __init__(self, cascade_file_path,
+                 scaleFactor=1.1,
+                 minNeighbors=3,
+                 minSize=(45, 45),
+                 box_color=[255, 255, 255],
+                 box_line_thickness=3,
+                 text_color=[255, 255, 255],
+                 text_str='OBJECT',
+                 text_scale=1.0,
+                 text_line_width=2):
         """
         Build a cascade object detector object.
         """
         self.cascade = cv2.CascadeClassifier(cascade_file_path)
+        self.scaleFactor = scaleFactor
+        self.minNeighbors = minNeighbors
+        self.minSize = minSize
+        self.box_color = box_color
+        self.box_line_thickness = box_line_thickness
+        self.text_color = text_color
+        self.text_str = text_str
+        self.text_scale = text_scale
+        self.text_line_width = text_line_width
 
     def detect(self, frame, annotate=False):
         """
@@ -181,11 +199,12 @@ class CascadeObjectDetector:
             raise Exception("invalid frame.ndim")
 
         # Call the OpenCV cascade.
-        rectangles = self.cascade.detectMultiScale(frame_gray,
-                                                   scaleFactor=1.1,
-                                                   minNeighbors=3,
-                                                   minSize=(45, 45),
-                                                   flags = cv2.CASCADE_SCALE_IMAGE)
+        rectangles = self.cascade.detectMultiScale(
+                frame_gray,
+                scaleFactor=self.scaleFactor,
+                minNeighbors=self.minNeighbors,
+                minSize=self.minSize,
+                flags = cv2.CASCADE_SCALE_IMAGE)
 
         # `rectangles` is a numpy ndarray, but we'd like it to be a list of tuples.
         rectangles = [tuple(rect) for rect in rectangles]
@@ -201,19 +220,15 @@ class CascadeObjectDetector:
         Annotate the image by adding boxes and labels around the detected
         objects inside of `frame`.
         """
-        box_color = [255, 255, 255]
-        box_line_thickness = 3
-        text_color = [255, 255, 255]
-
         for x, y, width, height in rectangles:
 
             cv2.rectangle(frame,
                           (x,          y),
                           (x + width, y + height),
-                          box_color, box_line_thickness)
+                          self.box_color, self.box_line_thickness)
 
-            cv2.putText(frame, "HUMAN", (x, y), cv2.FONT_HERSHEY_SIMPLEX,
-                        1, text_color, 2)
+            cv2.putText(frame, self.text_str, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
+                        self.text_scale, self.text_color, self.text_line_width)
 
 
 class FaceDetector(CascadeObjectDetector):
@@ -228,7 +243,16 @@ class FaceDetector(CascadeObjectDetector):
         if cascade_file_path is None:
             cascade_file_path = os.path.join(CURR_DIR,
                     "resources/cascades/haarcascade_frontalface_alt.xml")
-        super().__init__(cascade_file_path)
+        super().__init__(cascade_file_path,
+                         scaleFactor=1.1,
+                         minNeighbors=3,
+                         minSize=(45, 45),
+                         box_color=[255, 255, 255],
+                         box_line_thickness=3,
+                         text_color=[255, 255, 255],
+                         text_str='HUMAN',
+                         text_scale=1.0,
+                         text_line_width=2)
 
 
 class StopSignDetector(CascadeObjectDetector):
@@ -243,5 +267,14 @@ class StopSignDetector(CascadeObjectDetector):
         if cascade_file_path is None:
             cascade_file_path = os.path.join(CURR_DIR,
                     "resources/cascades/stop_sign.xml")
-        super().__init__(cascade_file_path)
+        super().__init__(cascade_file_path,
+                         scaleFactor=1.1,
+                         minNeighbors=10,
+                         minSize=(30, 30),
+                         box_color=[255, 0, 0],
+                         box_line_thickness=3,
+                         text_color=[255, 0, 0],
+                         text_str='STOP SIGN',
+                         text_scale=1.0,
+                         text_line_width=2)
 
