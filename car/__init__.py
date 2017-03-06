@@ -25,7 +25,7 @@ do not print.
 
 __all__ = ['forward', 'reverse', 'left', 'right',
            'capture', 'plot', 'classify_color',
-           'detect_faces', 'detect_stop_signs']
+           'detect_faces', 'detect_stop_signs', 'detect_pedestrians']
 
 
 from car import db
@@ -260,5 +260,27 @@ def detect_stop_signs(frame):
     rects = STOPSIGNDETECTOR.detect(frame, annotate=True)
     n = len(rects)
     print("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
+    return rects
+
+
+def detect_pedestrians(frame):
+    """
+    Detect pedestrians inside of `frame`, and annotate each pedestrian.
+
+    The `frame` parameter must be an image as a numpy array either containing
+    3-channel RGB values _or_ 1-channel gray values.
+
+    Returns a list of rectangles, where each rectangle is a 4-tuple of:
+        (x, y, width, height)
+    """
+    if 'PEDESTRIANDETECTOR' not in globals():
+        global PEDESTRIANDETECTOR
+        from car.models import PedestrianDetector
+        PEDESTRIANDETECTOR = PedestrianDetector()
+        print("Instantiated a PedestrianDetector object!")
+
+    rects = PEDESTRIANDETECTOR.detect(frame, annotate=True)
+    n = len(rects)
+    print("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
     return rects
 

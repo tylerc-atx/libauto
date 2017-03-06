@@ -15,7 +15,8 @@ easier interfaces which abstract the underlying algorithms and only expose
 the resulting desired behaviors.
 """
 
-__all__ = ['ColorClassifier', 'FaceDetector', 'StopSignDetector']
+__all__ = ['ColorClassifier', 'FaceDetector', 'StopSignDetector',
+           'PedestrianDetector']
 
 
 import os
@@ -334,4 +335,70 @@ class StopSignDetector(CascadeObjectDetector):
                          text_str=text_str,
                          text_scale=text_scale,
                          text_line_width=text_line_width)
+
+
+class PedestrianDetector(ObjectDetector):
+    """
+    This class detects pedestrians in images.
+    """
+
+    def __init__(self, winStride=(4, 4),
+                       padding=(8, 8),
+                       scale=1.05,
+                       box_color=[0, 0, 255],
+                       box_line_thickness=3,
+                       text_color=[0, 0, 255],
+                       text_str='PEDESTRIAN',
+                       text_scale=0.75,
+                       text_line_width=2):
+        """
+        Build a pedestrian detector object.
+        """
+        self.hog = cv2.HOGDescriptor()
+        self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+        self.winStride = winStride
+        self.padding = padding
+        self.scale = scale
+        super().__init__(box_color, box_line_thickness, text_color,
+                         text_str, text_scale, text_line_width)
+
+    def detect(self, frame, annotate=False):
+        """
+        Detect pedestrians inside of the image `frame`.
+
+        The `frame` parameter must be an image as a numpy array either containing
+        3-channel RGB values _or_ 1-channel gray values.
+
+        Returns a list of rectangles, where each rectangles is a 4-tuple of:
+            (x, y, width, height)
+        """
+
+        # Get an RGB image of the proper shape:
+        if frame.ndim == 3:
+            if frame.shape[2] == 3:
+                frame_rgb = frame
+            elif frame.shape[2] == 1:
+                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
+            else:
+                raise Exception("invalid number of color channels")
+        elif frame.ndim == 2:
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
+        else:
+            raise Exception("invalid frame.ndim")
+
+        # Call the OpenCV HOG model.
+        rectangles, weights = self.hog.detectMultiScale(
+                                            frame_rgb,
+                                            winStride=self.winStride,
+                                            padding=self.padding,
+                                            scale=self.scale)
+
+        # `rectangles` is a numpy ndarray, but we'd like it to be a list of tuples.
+        rectangles = [tuple(rect) for rect in rectangles]
+
+        # Annotate it if the user so desires.
+        if annotate:
+            self.annotate(frame, rectangles)
+
+        return rectangles
 
