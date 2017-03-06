@@ -151,15 +151,15 @@ class CascadeObjectDetector:
     """
 
     def __init__(self, cascade_file_path,
-                 scaleFactor=1.1,
-                 minNeighbors=3,
-                 minSize=(45, 45),
-                 box_color=[255, 255, 255],
-                 box_line_thickness=3,
-                 text_color=[255, 255, 255],
-                 text_str='OBJECT',
-                 text_scale=1.0,
-                 text_line_width=2):
+                       scaleFactor,
+                       minNeighbors,
+                       minSize,
+                       box_color,
+                       box_line_thickness,
+                       text_color,
+                       text_str,
+                       text_scale,
+                       text_line_width):
         """
         Build a cascade object detector object.
         """
@@ -236,7 +236,16 @@ class FaceDetector(CascadeObjectDetector):
     This class detects human faces in images.
     """
 
-    def __init__(self, cascade_file_path=None):
+    def __init__(self, cascade_file_path=None,
+                       scaleFactor=1.1,
+                       minNeighbors=3,
+                       minSize=(45, 45),
+                       box_color=[255, 255, 255],
+                       box_line_thickness=3,
+                       text_color=[255, 255, 255],
+                       text_str='HUMAN',
+                       text_scale=1.0,
+                       text_line_width=2):
         """
         Build a face detector object.
         """
@@ -244,15 +253,15 @@ class FaceDetector(CascadeObjectDetector):
             cascade_file_path = os.path.join(CURR_DIR,
                     "resources/cascades/haarcascade_frontalface_alt.xml")
         super().__init__(cascade_file_path,
-                         scaleFactor=1.1,
-                         minNeighbors=3,
-                         minSize=(45, 45),
-                         box_color=[255, 255, 255],
-                         box_line_thickness=3,
-                         text_color=[255, 255, 255],
-                         text_str='HUMAN',
-                         text_scale=1.0,
-                         text_line_width=2)
+                         scaleFactor=scaleFactor,
+                         minNeighbors=minNeighbors,
+                         minSize=minSize,
+                         box_color=box_color,
+                         box_line_thickness=box_line_thickness,
+                         text_color=text_color,
+                         text_str=text_str,
+                         text_scale=text_scale,
+                         text_line_width=text_line_width)
 
 
 class StopSignDetector(CascadeObjectDetector):
@@ -260,7 +269,16 @@ class StopSignDetector(CascadeObjectDetector):
     This class detects stop signs in images.
     """
 
-    def __init__(self, cascade_file_path=None):
+    def __init__(self, cascade_file_path=None,
+                       scaleFactor=1.1,
+                       minNeighbors=10,
+                       minSize=(30, 30),
+                       box_color=[255, 0, 0],
+                       box_line_thickness=3,
+                       text_color=[255, 0, 0],
+                       text_str='STOP SIGN',
+                       text_scale=1.0,
+                       text_line_width=2):
         """
         Build a stop sign detector object.
         """
@@ -268,13 +286,13 @@ class StopSignDetector(CascadeObjectDetector):
             cascade_file_path = os.path.join(CURR_DIR,
                     "resources/cascades/stop_sign.xml")
         super().__init__(cascade_file_path,
-                         scaleFactor=1.1,
-                         minNeighbors=10,
-                         minSize=(30, 30),
-                         box_color=[255, 0, 0],
-                         box_line_thickness=3,
-                         text_color=[255, 0, 0],
-                         text_str='STOP SIGN',
-                         text_scale=1.0,
-                         text_line_width=2)
+                         scaleFactor=scaleFactor,
+                         minNeighbors=minNeighbors,
+                         minSize=minSize,
+                         box_color=box_color,
+                         box_line_thickness=box_line_thickness,
+                         text_color=text_color,
+                         text_str=text_str,
+                         text_scale=text_scale,
+                         text_line_width=text_line_width)
 
