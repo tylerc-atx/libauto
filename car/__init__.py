@@ -198,7 +198,7 @@ def plot(frames, **fig_kwargs):
     return fig
 
 
-def classify_color(frame):
+def classify_color(frame, annotate=True):
     """
     Classify the center region of `frame` as having either primarily "red",
     "yellow", or "green, or none of those ("background").
@@ -214,12 +214,12 @@ def classify_color(frame):
         COLORCLASSIFIER = ColorClassifier()
         print("Instantiated a ColorClassifier object!")
 
-    p1, p2, classific = COLORCLASSIFIER.classify(frame, annotate=True)
+    p1, p2, classific = COLORCLASSIFIER.classify(frame, annotate=annotate)
     print("Classified color as '{}'.".format(classific))
     return classific
 
 
-def detect_faces(frame):
+def detect_faces(frame, annotate=True):
     """
     Detect faces inside of `frame`, and annotate each face.
 
@@ -235,13 +235,13 @@ def detect_faces(frame):
         FACEDETECTOR = FaceDetector()
         print("Instantiated a FaceDetector object!")
 
-    faces = FACEDETECTOR.detect(frame, annotate=True)
+    faces = FACEDETECTOR.detect(frame, annotate=annotate)
     n = len(faces)
     print("Found {} face{}.".format(n, 's' if n != 1 else ''))
     return faces
 
 
-def detect_stop_signs(frame):
+def detect_stop_signs(frame, annotate=True):
     """
     Detect stop signs inside of `frame`, and annotate each stop sign.
 
@@ -257,13 +257,13 @@ def detect_stop_signs(frame):
         STOPSIGNDETECTOR = StopSignDetector()
         print("Instantiated a StopSignDetector object!")
 
-    rects = STOPSIGNDETECTOR.detect(frame, annotate=True)
+    rects = STOPSIGNDETECTOR.detect(frame, annotate=annotate)
     n = len(rects)
     print("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
     return rects
 
 
-def detect_pedestrians(frame):
+def detect_pedestrians(frame, annotate=True):
     """
     Detect pedestrians inside of `frame`, and annotate each pedestrian.
 
@@ -279,7 +279,7 @@ def detect_pedestrians(frame):
         PEDESTRIANDETECTOR = PedestrianDetector()
         print("Instantiated a PedestrianDetector object!")
 
-    rects = PEDESTRIANDETECTOR.detect(frame, annotate=True)
+    rects = PEDESTRIANDETECTOR.detect(frame, annotate=annotate)
     n = len(rects)
     print("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
     return rects
