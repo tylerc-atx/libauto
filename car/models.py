@@ -150,9 +150,60 @@ class ColorClassifier:
             cv2.putText(frame, text, p1, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2)
 
 
-class CascadeObjectDetector:
+class ObjectDetector:
     """
-    This is the base-class for the cascade object detector classes which follow
+    This is the base-class for all the object detector classes which follow
+    in this file.
+    Two example sub-classes are `CascadeObjectDetector` and `PedestrianDetector`.
+    """
+
+    def __init__(self, box_color, box_line_thickness, text_color,
+                       text_str, text_scale, text_line_width):
+        """
+        Build a object detector object.
+        """
+        self.box_color = box_color
+        self.box_line_thickness = box_line_thickness
+        self.text_color = text_color
+        self.text_str = text_str
+        self.text_scale = text_scale
+        self.text_line_width = text_line_width
+
+    def detect(self, frame, annotate=False):
+        """
+        Detect objects inside of the image `frame`.
+
+        The `frame` parameter must be an image as a numpy array either containing
+        3-channel RGB values _or_ 1-channel gray values.
+
+        Returns a list of rectangles, where each rectangles is a 4-tuple of:
+            (x, y, width, height)
+
+        This base implementation is abstract and should not be invoked.
+        """
+        raise Exception("abstract implementation invoked")
+
+    def annotate(self, frame, rectangles):
+        """
+        Annotate the image by adding boxes and labels around the detected
+        objects inside of `frame`. The `rectangles` parameter should be a
+        list of 4-tuples where each tuple is:
+            (x, y, width, height)
+        """
+        for x, y, width, height in rectangles:
+
+            cv2.rectangle(frame,
+                          (x,          y),
+                          (x + width, y + height),
+                          self.box_color, self.box_line_thickness)
+
+            cv2.putText(frame, self.text_str, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
+                        self.text_scale, self.text_color, self.text_line_width)
+
+
+class CascadeObjectDetector(ObjectDetector):
+    """
+    This is the base-class for the _cascade_ object detector classes which follow
     in this file.
     Two example sub-classes are `FaceDetector` and `StopSignDetector`.
     """
@@ -174,12 +225,8 @@ class CascadeObjectDetector:
         self.scaleFactor = scaleFactor
         self.minNeighbors = minNeighbors
         self.minSize = minSize
-        self.box_color = box_color
-        self.box_line_thickness = box_line_thickness
-        self.text_color = text_color
-        self.text_str = text_str
-        self.text_scale = text_scale
-        self.text_line_width = text_line_width
+        super().__init__(box_color, box_line_thickness, text_color,
+                         text_str, text_scale, text_line_width)
 
     def detect(self, frame, annotate=False):
         """
@@ -221,21 +268,6 @@ class CascadeObjectDetector:
             self.annotate(frame, rectangles)
 
         return rectangles
-
-    def annotate(self, frame, rectangles):
-        """
-        Annotate the image by adding boxes and labels around the detected
-        objects inside of `frame`.
-        """
-        for x, y, width, height in rectangles:
-
-            cv2.rectangle(frame,
-                          (x,          y),
-                          (x + width, y + height),
-                          self.box_color, self.box_line_thickness)
-
-            cv2.putText(frame, self.text_str, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
-                        self.text_scale, self.text_color, self.text_line_width)
 
 
 class FaceDetector(CascadeObjectDetector):
