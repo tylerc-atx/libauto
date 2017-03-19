@@ -111,6 +111,14 @@ def right(duration=1.0):
     set_throttle(0)
 
 
+def pause(duration=1.0):
+    """
+    Pause the car's code for `duration` seconds.
+    """
+    print("Pausing for {} seconds.".format(duration))
+    time.sleep(duration)
+
+
 def capture(num_frames=1):
     """
     Capture `num_frames` frames from the car's camera and return
@@ -283,4 +291,41 @@ def detect_pedestrians(frame, annotate=True):
     n = len(rects)
     print("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
     return rects
+
+
+def object_location(object_list, frame_shape):
+    """
+    Calculate the location of the largest object in `object_list`.
+
+    Returns one of: 'frame_left', 'frame_right', 'frame_center', None
+    """
+    if not object_list:
+        print("Object location is None.")
+        return None
+    areas = [w*h for x, y, w, h in object_list]
+    i = np.argmax(areas)
+    nearest = object_list[i]
+    x, y, w, h = nearest
+    x_center = x + w/2.
+    if x_center < frame_shape[1]/3.:
+        location = 'frame_left'
+    elif x_center < 2*frame_shape[1]/3.:
+        location = 'frame_center'
+    else:
+        location = 'frame_right'
+    print("Object location is '{}'.".format(location))
+    return location
+
+
+def object_size(object_list, frame_shape):
+    """
+    Calculate the ratio of the nearest object's area to the frame's area.
+    """
+    if not object_list:
+        print("Object area is 0.")
+        return 0.0
+    areas = [w*h for x, y, w, h in object_list]
+    ratio = max(areas) / (frame_shape[0] * frame_shape[1])
+    print("Object area is {}.".format(ratio))
+    return ratio
 
