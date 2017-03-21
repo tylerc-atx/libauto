@@ -23,9 +23,10 @@ the beginners to see what is happening. The other modules of this library
 do not print.
 """
 
-__all__ = ['forward', 'reverse', 'left', 'right',
+__all__ = ['forward', 'reverse', 'left', 'right', 'pause',
            'capture', 'plot', 'classify_color',
-           'detect_faces', 'detect_stop_signs', 'detect_pedestrians']
+           'detect_faces', 'detect_stop_signs', 'detect_pedestrians',
+           'object_location', 'object_size']
 
 
 from car import db
