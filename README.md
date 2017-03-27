@@ -11,5 +11,5 @@ conda install -c https://conda.binstar.org/menpo opencv3
 pip install keras
 pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.0.0-py3-none-any.whl
 rm -f ~/.keras/keras.json
-conda install requests h5py pandas
+conda install requests h5py pandas twisted openssl
 ```
