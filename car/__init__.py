@@ -127,8 +127,8 @@ def capture(num_frames=1):
     """
     if 'CAMERA' not in globals():
         global CAMERA
-        from car.camera import CameraRGB
-        CAMERA = CameraRGB()
+        from car.camera import CameraRGB, wrap_frame_index_decorator
+        CAMERA = wrap_frame_index_decorator(CameraRGB())
         print("Instantiated a camera object!")
 
     if num_frames > 1:
