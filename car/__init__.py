@@ -171,7 +171,7 @@ def plot(frames, **fig_kwargs):
         frames = np.expand_dims(frames, axis=2)
         frames = np.expand_dims(frames, axis=0)
     else:
-        raise Exception("invalid frames ndarray shape")
+        raise Exception("invalid frames ndarray ndim")
     if frames.shape[3] != 3 and frames.shape[3] != 1:
         raise Exception("invalid number of channels")
 
@@ -205,6 +205,41 @@ def plot(frames, **fig_kwargs):
         ax.axis('off')
 
     return fig
+
+
+def stream(frame):
+    """
+    Stream the given `frame` (a numpy ndarray) to all browsers currently
+    viewing the stream.
+
+    The `frame` parameter must be a numpy ndarray with one of the
+    following shapes:
+        - (h, w, 3)   meaning a single 3-channel RGB image of size `w`x`h`
+        - (h, w, 1)   meaning a single 1-channel gray image of size `w`x`h`
+        - (h, w)      meaning a single 1-channel gray image of size `w`x`h`
+    """
+    if 'STREAM_FUNC' not in globals():
+        global STREAM_FUNC
+        from car.net import start_reactor_thread, start_frame_stream_server
+        start_reactor_thread()
+        port, STREAM_FUNC = start_frame_stream_server()
+        print("Started the HTTP frame streaming server on TCP port {}.".format(port))
+
+    # Ensure the proper shape of `frame`.
+    if frame.ndim == 3:
+        pass
+    elif frame.ndim == 2:
+        frame = np.expand_dims(frame, axis=2)
+        assert frame.ndim == 3
+    else:
+        raise Exception("invalid frame ndarray ndim")
+    if frame.shape[2] == 1:
+        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
+    if frame.shape[2] != 3:
+        raise Exception("invalid number of channels")
+
+    # Stream the frame!
+    STREAM_FUNC(frame)
 
 
 def classify_color(frame, annotate=True):

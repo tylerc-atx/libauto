@@ -26,7 +26,7 @@ class CameraRGB:
     This class represents a camera which captures in raw RGB.
     """
 
-    def __init__(self, width=320, height=240, fps=16):
+    def __init__(self, width=320, height=240, fps=8):
         """
         Initialize a camera object which captures frames of size `width`x`height`
         at `fps` frames-per-second.

@@ -27,10 +27,11 @@ import cv2
 def start_reactor_thread():
     def run_reactor():
         reactor.run(installSignalHandlers=0)
-    global reactorThread
-    reactorThread = Thread(target=run_reactor)
-    reactorThread.daemon = True
-    reactorThread.start()
+    if 'reactorThread' not in globals():
+        global reactorThread
+        reactorThread = Thread(target=run_reactor)
+        reactorThread.daemon = True
+        reactorThread.start()
 
 
 def stop_reactor_thread():
