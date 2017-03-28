@@ -22,6 +22,7 @@ from twisted.protocols import basic
 from threading import Thread
 
 import cv2
+import numpy as np
 
 
 def start_reactor_thread():
@@ -91,7 +92,22 @@ def start_frame_stream_server():
     start_tcp_server(factory, port)
 
     def submit_frame(frame):
-        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        # Ensure the proper shape of `frame`.
+        if frame.ndim == 3:
+            if frame.shape[2] == 3:
+                # cv2.imencode expects a BGR image:
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                assert frame.ndim == 3 and frame.shape[2] == 3
+            elif frame.shape[2] == 1:
+                pass
+            else:
+                raise Exception("invalid number of channels")
+        elif frame.ndim == 2:
+            frame = np.expand_dims(frame, axis=2)
+            assert frame.ndim == 3 and frame.shape[2] == 1
+        else:
+            raise Exception("invalid frame ndarray ndim")
+
         data = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 20])[1].tobytes()
         reactor.callFromThread(factory.send_img_buffer, data)
 

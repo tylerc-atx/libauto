@@ -225,19 +225,6 @@ def stream(frame):
         port, STREAM_FUNC = start_frame_stream_server()
         print("Started the HTTP frame streaming server on TCP port {}.".format(port))
 
-    # Ensure the proper shape of `frame`.
-    if frame.ndim == 3:
-        pass
-    elif frame.ndim == 2:
-        frame = np.expand_dims(frame, axis=2)
-        assert frame.ndim == 3
-    else:
-        raise Exception("invalid frame ndarray ndim")
-    if frame.shape[2] == 1:
-        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
-    if frame.shape[2] != 3:
-        raise Exception("invalid number of channels")
-
     # Stream the frame!
     STREAM_FUNC(frame)
 
