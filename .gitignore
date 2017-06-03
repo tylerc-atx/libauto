@@ -35,4 +35,4 @@
 # OSX
 .DS_Store
 
-*.db
+settings.db
