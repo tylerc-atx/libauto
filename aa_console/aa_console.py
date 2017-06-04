@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pygame, sys
 from collections import deque
 import os
