@@ -13,7 +13,7 @@ Hacky Twisted code.
 """
 
 __all__ = ['start_reactor_thread', 'stop_reactor_thread',
-           'start_frame_stream_server']
+           'start_frame_stream_server', 'connect_to_console_server']
 
 
 from twisted.internet import reactor, protocol, threads
@@ -46,6 +46,12 @@ def start_tcp_server(factory, port):
     def listen():
         reactor.listenTCP(port, factory)
     reactor.callFromThread(listen)
+
+
+def start_tcp_client(factory, address, port):
+    def connect_client():
+        reactor.connectTCP(address, port, factory)
+    reactor.callFromThread(connect_client)
 
 
 def start_frame_stream_server():
@@ -112,4 +118,47 @@ def start_frame_stream_server():
         reactor.callFromThread(factory.send_img_buffer, data)
 
     return port, submit_frame
+
+
+def connect_to_console_server():
+    class ConsoleClientProtocol(protocol.Protocol):
+        def __init__(self, factory):
+            self.factory = factory
+
+        def connectionMade(self):
+            self.transport.setTcpNoDelay(True)
+            for data in self.factory.content:
+                self.transport.write(data)
+            self.factory.content = []
+            self.factory.protocol = self
+            self.factory = None
+
+    class ConsoleClientFactory(protocol.ClientFactory):
+        def __init__(self):
+            self.content = []
+            self.protocol = None
+
+        def buildProtocol(self, addr):
+            return ConsoleClientProtocol(self)
+
+        def _send(self, data):
+            if not self.protocol:
+                self.content.append(data)
+            else:
+                self.protocol.transport.write(data)
+
+        def send(self, data):
+            reactor.callFromThread(self._send, data)
+
+    factory = ConsoleClientFactory()
+    start_tcp_client(factory, "localhost", 1024)
+    send_func = factory.send
+
+    class Writable:
+        def write(self, text):
+            send_func(text.encode())
+        def flush(self):
+            pass
+
+    return Writable()
 

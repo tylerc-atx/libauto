@@ -26,14 +26,26 @@ do not print.
 __all__ = ['forward', 'reverse', 'left', 'right', 'pause',
            'capture', 'plot', 'classify_color',
            'detect_faces', 'detect_stop_signs', 'detect_pedestrians',
-           'object_location', 'object_size']
+           'object_location', 'object_size', 'lcdout']
 
 
 from car import db
+from car.net import start_reactor_thread, start_frame_stream_server, connect_to_console_server
 import numpy as np
 import time
 import cv2
 import os
+
+
+built_in_print = print
+
+def print_all(*args, **kwargs):
+    built_in_print(*args, **kwargs)
+    print(*args, **kwargs)
+
+
+start_reactor_thread()
+lcdout = connect_to_console_server()
 
 
 CURR_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -48,9 +60,9 @@ def forward(duration=1.0):
     from car.steering import set_steering
     from car.throttle import set_throttle, THROTTLE_SAFE_FORWARD_VALUE
     if duration > 5.0:
-        print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
+        print_all("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
-    print("Driving forward for {} seconds.".format(duration))
+    print_all("Driving forward for {} seconds.".format(duration))
     set_steering(0.0)
     time.sleep(0.05)
     set_throttle(THROTTLE_SAFE_FORWARD_VALUE)
@@ -65,9 +77,9 @@ def reverse(duration=1.0):
     from car.steering import set_steering
     from car.throttle import set_throttle, THROTTLE_SAFE_REVERSE_VALUE
     if duration > 5.0:
-        print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
+        print_all("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
-    print("Driving in reverse for {} seconds.".format(duration))
+    print_all("Driving in reverse for {} seconds.".format(duration))
     set_steering(0.0)
     set_throttle(THROTTLE_SAFE_REVERSE_VALUE)
     time.sleep(0.1)
@@ -85,9 +97,9 @@ def left(duration=1.0):
     from car.steering import set_steering
     from car.throttle import set_throttle, THROTTLE_SAFE_FORWARD_VALUE
     if duration > 5.0:
-        print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
+        print_all("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
-    print("Driving left for {} seconds.".format(duration))
+    print_all("Driving left for {} seconds.".format(duration))
     set_steering(45.0)
     time.sleep(0.05)
     set_throttle(THROTTLE_SAFE_FORWARD_VALUE)
@@ -102,9 +114,9 @@ def right(duration=1.0):
     from car.steering import set_steering
     from car.throttle import set_throttle, THROTTLE_SAFE_FORWARD_VALUE
     if duration > 5.0:
-        print("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
+        print_all("Error: The duration exceeds 5 seconds; will reset to 5 seconds.")
         duration = 5.0
-    print("Driving right for {} seconds.".format(duration))
+    print_all("Driving right for {} seconds.".format(duration))
     set_steering(-45.0)
     time.sleep(0.05)
     set_throttle(THROTTLE_SAFE_FORWARD_VALUE)
@@ -116,8 +128,15 @@ def pause(duration=1.0):
     """
     Pause the car's code for `duration` seconds.
     """
-    print("Pausing for {} seconds.".format(duration))
+    print_all("Pausing for {} seconds.".format(duration))
     time.sleep(duration)
+
+
+def print(*objects, sep=' ', end='\n'):
+    """
+    Print to the AutoAuto console!
+    """
+    built_in_print(*objects, sep=sep, end=end, file=lcdout)
 
 
 def capture(num_frames=1):
@@ -129,19 +148,19 @@ def capture(num_frames=1):
         global CAMERA
         from car.camera import CameraRGB, wrap_frame_index_decorator
         CAMERA = wrap_frame_index_decorator(CameraRGB())
-        print("Instantiated a camera object!")
+        print_all("Instantiated a camera object!")
 
     if num_frames > 1:
         frames = []
         for i, frame in zip(range(num_frames), CAMERA.stream()):
             frames.append(frame)
         frames = np.array(frames)
-        print("Captured {} frames.".format(num_frames))
+        print_all("Captured {} frames.".format(num_frames))
         return frames
 
     else:
         frame = CAMERA.capture()
-        print("Captured 1 frame.")
+        print_all("Captured 1 frame.")
         return frame
 
 
@@ -181,7 +200,7 @@ def plot(frames, **fig_kwargs):
     height = n // width
     if (n % width) > 0:
         height += 1
-    print("Plotting {} frame{}...".format(n, 's' if n != 1 else ''))
+    print_all("Plotting {} frame{}...".format(n, 's' if n != 1 else ''))
 
     # Create the figure grid.
     if 'figsize' not in fig_kwargs:
@@ -220,10 +239,8 @@ def stream(frame):
     """
     if 'STREAM_FUNC' not in globals():
         global STREAM_FUNC
-        from car.net import start_reactor_thread, start_frame_stream_server
-        start_reactor_thread()
         port, STREAM_FUNC = start_frame_stream_server()
-        print("Started the HTTP frame streaming server on TCP port {}.".format(port))
+        print_all("Started the HTTP frame streaming server on TCP port {}.".format(port))
 
     # Stream the frame!
     STREAM_FUNC(frame)
@@ -243,10 +260,10 @@ def classify_color(frame, annotate=True):
         global COLORCLASSIFIER
         from car.models import ColorClassifier
         COLORCLASSIFIER = ColorClassifier()
-        print("Instantiated a ColorClassifier object!")
+        print_all("Instantiated a ColorClassifier object!")
 
     p1, p2, classific = COLORCLASSIFIER.classify(frame, annotate=annotate)
-    print("Classified color as '{}'.".format(classific))
+    print_all("Classified color as '{}'.".format(classific))
     return classific
 
 
@@ -264,11 +281,11 @@ def detect_faces(frame, annotate=True):
         global FACEDETECTOR
         from car.models import FaceDetector
         FACEDETECTOR = FaceDetector()
-        print("Instantiated a FaceDetector object!")
+        print_all("Instantiated a FaceDetector object!")
 
     faces = FACEDETECTOR.detect(frame, annotate=annotate)
     n = len(faces)
-    print("Found {} face{}.".format(n, 's' if n != 1 else ''))
+    print_all("Found {} face{}.".format(n, 's' if n != 1 else ''))
     return faces
 
 
@@ -286,11 +303,11 @@ def detect_stop_signs(frame, annotate=True):
         global STOPSIGNDETECTOR
         from car.models import StopSignDetector
         STOPSIGNDETECTOR = StopSignDetector()
-        print("Instantiated a StopSignDetector object!")
+        print_all("Instantiated a StopSignDetector object!")
 
     rects = STOPSIGNDETECTOR.detect(frame, annotate=annotate)
     n = len(rects)
-    print("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
+    print_all("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
     return rects
 
 
@@ -308,11 +325,11 @@ def detect_pedestrians(frame, annotate=True):
         global PEDESTRIANDETECTOR
         from car.models import PedestrianDetector
         PEDESTRIANDETECTOR = PedestrianDetector()
-        print("Instantiated a PedestrianDetector object!")
+        print_all("Instantiated a PedestrianDetector object!")
 
     rects = PEDESTRIANDETECTOR.detect(frame, annotate=annotate)
     n = len(rects)
-    print("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
+    print_all("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
     return rects
 
 
@@ -323,7 +340,7 @@ def object_location(object_list, frame_shape):
     Returns one of: 'frame_left', 'frame_right', 'frame_center', None
     """
     if not object_list:
-        print("Object location is None.")
+        print_all("Object location is None.")
         return None
     areas = [w*h for x, y, w, h in object_list]
     i = np.argmax(areas)
@@ -336,7 +353,7 @@ def object_location(object_list, frame_shape):
         location = 'frame_center'
     else:
         location = 'frame_right'
-    print("Object location is '{}'.".format(location))
+    print_all("Object location is '{}'.".format(location))
     return location
 
 
@@ -345,10 +362,10 @@ def object_size(object_list, frame_shape):
     Calculate the ratio of the nearest object's area to the frame's area.
     """
     if not object_list:
-        print("Object area is 0.")
+        print_all("Object area is 0.")
         return 0.0
     areas = [w*h for x, y, w, h in object_list]
     ratio = max(areas) / (frame_shape[0] * frame_shape[1])
-    print("Object area is {}.".format(ratio))
+    print_all("Object area is {}.".format(ratio))
     return ratio
 
