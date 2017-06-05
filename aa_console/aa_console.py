@@ -8,7 +8,7 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
 # Settings:
-CONSOLE_FONT_SIZE = 32
+CONSOLE_FONT_SIZE = 30
 HEADER_FONT_SIZE = 45
 BG_COLOR = (0, 0, 0)
 HEADER_BG_COLOR = (136, 204, 136)
