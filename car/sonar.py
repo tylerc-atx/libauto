@@ -25,8 +25,8 @@ from car.gpio import (setup_output_on_pin,
                       query_micros)
 
 
-SONAR_TRIGGER_PIN = STORE.get('SONAR_TRIGGER_PIN', 27)
-SONAR_ECHO_PIN    = STORE.get('SONAR_ECHO_PIN',    17)
+SONAR_TRIGGER_PIN = STORE.get('SONAR_TRIGGER_PIN', 6)
+SONAR_ECHO_PIN    = STORE.get('SONAR_ECHO_PIN',    5)
 
 SONAR_MAX_DISTANCE_METERS_CUTOFF = STORE.get('SONAR_MAX_DISTANCE_METERS_CUTOFF', 1.0)
 

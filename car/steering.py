@@ -21,7 +21,7 @@ from car import STORE
 from car.gpio import setup_pwm_on_pin, set_pin_pwm_value
 
 
-STEERING_PIN         = STORE.get('STEERING_PIN',         23)
+STEERING_PIN         = STORE.get('STEERING_PIN',         26)
 STEERING_ZERO_VALUE  = STORE.get('STEERING_ZERO_VALUE',  14.0)
 STEERING_LEFT_VALUE  = STORE.get('STEERING_LEFT_VALUE',  19.0)
 STEERING_RIGHT_VALUE = STORE.get('STEERING_RIGHT_VALUE',  9.0)

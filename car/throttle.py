@@ -21,7 +21,7 @@ from car import STORE
 from car.gpio import setup_pwm_on_pin, set_pin_pwm_value, delay_micros
 
 
-THROTTLE_PIN                = STORE.get('THROTTLE_PIN',                24)
+THROTTLE_PIN                = STORE.get('THROTTLE_PIN',                16)
 THROTTLE_ZERO_VALUE         = STORE.get('THROTTLE_ZERO_VALUE',         15.0)
 THROTTLE_FULL_FORWARD_VALUE = STORE.get('THROTTLE_FULL_FORWARD_VALUE', 20.0)
 THROTTLE_FULL_REVERSE_VALUE = STORE.get('THROTTLE_FULL_REVERSE_VALUE', 10.0)
