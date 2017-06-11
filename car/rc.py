@@ -16,6 +16,7 @@ __all__ = ['manual_control']
 
 
 import time
+import car
 from car import STORE
 from car import steering, throttle
 from car.gpio import setup_input_on_pin, read_pin_pwm_value
@@ -30,10 +31,16 @@ setup_input_on_pin(RC_THROTTLE_PIN)
 
 
 def manual_control():
+    i = 0
     while True:
-        cur_steering = read_pin_pwm_value(RC_STEERING_PIN)
-        cur_throttle = read_pin_pwm_value(RC_THROTTLE_PIN)
-        steering.set_pin_pwm_value(steering.STEERING_PIN, cur_steering)
-        throttle.set_pin_pwm_value(throttle.THROTTLE_PIN, cur_throttle)
+        steering_pwm_value = read_pin_pwm_value(RC_STEERING_PIN)
+        throttle_pwm_value = read_pin_pwm_value(RC_THROTTLE_PIN)
+        steering_angle = steering._pwm_to_angle(steering_pwm_value)
+        throttle_value = throttle._pwm_to_throttle(throttle_pwm_value)
+        if (i % 100) == 0:
+            car.print("Steering {:.1f}, Throttle {:.1f}".format(steering_angle, throttle_value))
+        steering.set_steering(steering_angle)
+        throttle.set_throttle(throttle_value)
         time.sleep(0.01)
+        i += 1
 
