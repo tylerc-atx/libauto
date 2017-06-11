@@ -35,11 +35,22 @@ def _clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
 
 
-def set_steering(angle):
-    """
-    Set the vehicle's steering in the range [-45, 45], where -45 means
-    full-right and 45 means full-left.
-    """
+def _pwm_to_angle(pwm_value):
+    zero = STEERING_ZERO_VALUE
+    left = STEERING_LEFT_VALUE
+    right = STEERING_RIGHT_VALUE
+    pwm_value = _clamp(pwm_value, min(left, right), max(left, right))
+    if pwm_value < zero:
+        pwm_value = (zero - pwm_value) / (zero - right)
+        other = -45.0
+    else:
+        pwm_value = (pwm_value - zero) / (left - zero)
+        other = 45.0
+    a, b = 0.0, other
+    return (b - a) * pwm_value + a
+
+
+def _angle_to_pwm(angle):
     zero = STEERING_ZERO_VALUE
     left = STEERING_LEFT_VALUE
     right = STEERING_RIGHT_VALUE
@@ -50,7 +61,16 @@ def set_steering(angle):
     else:
         other = left
     a, b = zero, other
-    set_pin_pwm_value(STEERING_PIN, (b - a) * (angle / 45.0) + a)
+    return (b - a) * (angle / 45.0) + a
+
+
+def set_steering(angle):
+    """
+    Set the vehicle's steering in the range [-45, 45], where -45 means
+    full-right and 45 means full-left.
+    """
+    pwm_value = _angle_to_pwm(angle)
+    set_pin_pwm_value(STEERING_PIN, pwm_value)
 
 
 set_steering(0.0)

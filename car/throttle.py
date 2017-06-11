@@ -37,11 +37,22 @@ def _clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
 
 
-def set_throttle(throttle):
-    """
-    Set the vehicle's throttle in the range [-100, 100], where -100 means
-    full-reverse and 100 means full-forward.
-    """
+def _pwm_to_throttle(pwm_value):
+    zero = THROTTLE_ZERO_VALUE
+    forward = THROTTLE_FULL_FORWARD_VALUE
+    reverse = THROTTLE_FULL_REVERSE_VALUE
+    pwm_value = _clamp(pwm_value, min(forward, reverse), max(forward, reverse))
+    if pwm_value < zero:
+        pwm_value = (zero - pwm_value) / (zero - reverse)
+        other = -100.0
+    else:
+        pwm_value = (pwm_value - zero) / (forward - zero)
+        other = 100.0
+    a, b = 0.0, other
+    return (b - a) * pwm_value + a
+
+
+def _throttle_to_pwm(throttle):
     zero = THROTTLE_ZERO_VALUE
     forward = THROTTLE_FULL_FORWARD_VALUE
     reverse = THROTTLE_FULL_REVERSE_VALUE
@@ -52,7 +63,16 @@ def set_throttle(throttle):
     else:
         other = forward
     a, b = zero, other
-    set_pin_pwm_value(THROTTLE_PIN, (b - a) * (throttle / 100.0) + a)
+    return (b - a) * (throttle / 100.0) + a
+
+
+def set_throttle(throttle):
+    """
+    Set the vehicle's throttle in the range [-100, 100], where -100 means
+    full-reverse and 100 means full-forward.
+    """
+    pwm_value = _throttle_to_pwm(throttle)
+    set_pin_pwm_value(THROTTLE_PIN, pwm_value)
 
 
 set_throttle(0.0)
