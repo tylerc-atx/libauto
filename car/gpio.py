@@ -18,7 +18,7 @@ and all `pin_index` parameters in this module use the Broadcom GPIO pin numberin
 
 __all__ = ['setup_pwm_on_pin', 'setup_output_on_pin', 'setup_input_on_pin'
            'set_pin_pwm_value', 'set_output_pin_value', 'query_input_pin',
-           'delay_micros', 'query_micros']
+           'read_pin_pwm_value', 'delay_micros', 'query_micros']
 
 
 import os
@@ -94,6 +94,35 @@ def query_input_pin(pin_index):
     This pin must have previously been configured using a call to `setup_input_on_pin()`.
     """
     return wpi.digitalRead(pin_index) == 1
+
+
+def read_pin_pwm_value(pin_index):
+    """
+    Read the input from `pin_index` and return the PWM value in the
+    range [0, 100].
+    """
+
+    while not query_input_pin(pin_index):
+        pass
+    while query_input_pin(pin_index):
+        pass
+
+    # BEGIN CYCLE AT _LOW_
+    a = query_micros()
+
+    while not query_input_pin(pin_index):
+        pass
+
+    # IS HIGH NOW
+    b = query_micros()
+
+    while query_input_pin(pin_index):
+        pass
+
+    # IS LOW NOW
+    c = query_micros()
+
+    return ((c - b) / (c - a)) * 100.
 
 
 def delay_micros(num_microseconds):
