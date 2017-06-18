@@ -145,9 +145,9 @@ def _calibrate_safe_speed():
         STORE.put('THROTTLE_SAFE_FORWARD_VALUE', THROTTLE_SAFE_FORWARD_VALUE)
         STORE.put('THROTTLE_SAFE_REVERSE_VALUE', THROTTLE_SAFE_REVERSE_VALUE)
 
-        forward()
         left()
         right()
+        forward()
 
         if input("Keep? [n/y] ") == 'y':
             break

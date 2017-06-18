@@ -85,9 +85,9 @@ def _calibrate_steering_helper(smin, smid, smax):
     STORE.put('STEERING_LEFT_VALUE',  STEERING_LEFT_VALUE)
     STORE.put('STEERING_RIGHT_VALUE', STEERING_RIGHT_VALUE)
     from car import forward, left, right
-    forward()
     left()
     right()
+    forward()
 
 
 def _calibrate_steering():
@@ -98,9 +98,9 @@ def _calibrate_steering():
 
     while True:
 
-        smin = float(input("Steering min: "))
-        smid = float(input("Steering mid: "))
-        smax = float(input("Steering max: "))
+        smin = float(input("Steering min (probably in [ -9, -10]): "))
+        smid = float(input("Steering mid (probably in [-14, -15]): "))
+        smax = float(input("Steering max (probably in [-19, -20]): "))
 
         _calibrate_steering_helper(smin, smid, smax)
 
