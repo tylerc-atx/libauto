@@ -43,6 +43,8 @@ import car
 
 frames = car.capture(4)
 car.plot(frames)
+
+# There is also a lower-level class-based interface for the camera: `from car.camera import CameraRGB`
 ```
 
 ### Detect Humans
@@ -53,11 +55,13 @@ import car
 frame = car.capture()
 car.detect_faces(frame)
 car.plot(frame)
+
+# There is also a lower-level class-based interface for the face detector: `from car.models import FaceDetector`
 ```
 
 ### Stream Camera Frames (and detect humans)
 
-The frames can be viewed at http://ip_of_your_car:1025/
+The frames can be viewed at http://ip-of-your-car:1025/
 
 ```python
 import car
@@ -68,7 +72,7 @@ while True:
     car.stream(frame)
 ```
 
-### Detect Frame Center Color
+### Classify Frame Center Color
 
 ```python
 import car
@@ -77,6 +81,8 @@ frame = car.capture()
 color = car.classify_color(frame)
 car.plot(frame)
 car.print("The detected color is", color)
+
+# There is also a lower-level class-based interface for the color classifier: `from car.models import ColorClassifier`
 ```
 
 ### Detect Stop Signs
@@ -88,6 +94,8 @@ frame = car.capture()
 rectangles = detect_stop_signs(frame)
 car.plot(frame)
 print("Stop Signs Found at:", rectangles)
+
+# There is also a lower-level class-based interface for the stop sign detector: `from car.models import StopSignDetector`
 ```
 
 ### Detect Pedestrians
@@ -99,7 +107,93 @@ frame = car.capture()
 rectangles = detect_pedestrians(frame)
 car.plot(frame)
 print("Pedestrians Found at:", rectangles)
+
+# There is also a lower-level class-based interface for the stop sign detector: `from car.models import PedestrianDetector`
 ```
+
+### Object Location/Size Helpers
+
+```python
+import car
+
+frame = car.capture()
+rectangles = detect_stop_signs(frame)
+car.plot(frame)
+
+location = car.object_location(rectangles, frame.shape)
+size = car.object_size(rectangles, frame.shape)
+
+car.print("Object location:", location)
+car.print("Object size:", size)
+```
+
+### Precise Steering
+
+```python
+import car
+from car.steering import set_steering
+
+for angle in range(-45, 45):
+    set_steering(angle)
+    car.pause(0.05)
+    
+for angle in range(45, -45, -1):
+    set_steering(angle)
+    car.pause(0.05)
+    
+car.pause(0.5)
+set_steering(0.0)  # STRAIGHT
+car.pause(1.0)
+```
+
+### Precise Throttle
+
+WARNING: You can easily injure the car by setting the throttle too high. Use this interface with great caution.
+
+Run the code below in a large open space.
+
+```python
+import car
+from car.throttle import set_throttle
+
+set_throttle(0.0)     # CAR IN NEUTRAL
+car.pause(1.0)
+
+set_throttle(100.0)   # CAR'S MAX THROTTLE
+car.pause(0.3)
+
+set_throttle(50.0)    # HALF THROTTLE
+car.pause(0.5)
+
+set_throttle(0.0)     # NEUTRAL
+car.pause(2.0)
+```
+
+### Sonar Sensor (if available and working properly)
+
+```python
+from car.sonar import echo_time, query_distance
+
+seconds = echo_time()
+print("It took {} seconds for the ping to travel round-trip.".format(seconds))
+
+distance_meters = query_distance()
+print("The estimated distance to the nearest object is {} meters.".format(distance_meters))
+```
+
+### Radio-Controlled (RC) Car Mode
+
+You can return your car to it's original state: A basic RC car! This only works if your AutoAuto car has a receiver on it, and if you have a paird transmitter.
+
+```python
+from car.rc import manual_control
+
+manual_control()
+```
+
+### Low-level GPIO
+
+You can get access to the raw GPIO pins via the `car.gpio` module.
 
 # How to run in an Anaconda environment
 
