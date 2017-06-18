@@ -10,7 +10,95 @@ Run these examples on a real car.
 
 ```python
 from car.setup import calibrate
+
 calibrate()
+```
+
+### Drive the Car!
+
+```python
+import car
+
+car.forward()
+car.left()
+car.right()
+car.reverse()
+car.pause(2.0)
+car.forward(0.2)
+```
+
+### Print to the AutoAuto Console!
+
+```python
+import car
+
+car.print("Hello, my friend!")
+car.print("How are you today?")
+```
+
+### Use the Camera
+
+```python
+import car
+
+frames = car.capture(4)
+car.plot(frames)
+```
+
+### Detect Humans
+
+```python
+import car
+
+frame = car.capture()
+car.detect_faces(frame)
+car.plot(frame)
+```
+
+### Stream Camera Frames (and detect humans)
+
+The frames can be viewed at http://ip_of_your_car:1025/
+
+```python
+import car
+
+while True:
+    frame = car.capture()
+    car.detect_faces(frame)
+    car.stream(frame)
+```
+
+### Detect Frame Center Color
+
+```python
+import car
+
+frame = car.capture()
+color = car.classify_color(frame)
+car.plot(frame)
+car.print("The detected color is", color)
+```
+
+### Detect Stop Signs
+
+```python
+import car
+
+frame = car.capture()
+rectangles = detect_stop_signs(frame)
+car.plot(frame)
+print("Stop Signs Found at:", rectangles)
+```
+
+### Detect Pedestrians
+
+```python
+import car
+
+frame = car.capture()
+rectangles = detect_pedestrians(frame)
+car.plot(frame)
+print("Pedestrians Found at:", rectangles)
 ```
 
 # How to run in an Anaconda environment
