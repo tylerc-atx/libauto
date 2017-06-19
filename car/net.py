@@ -152,11 +152,16 @@ def connect_to_console_server():
 
     factory = ConsoleClientFactory()
     start_tcp_client(factory, "localhost", 1024)
-    send_func = factory.send
+    binary_send_func = factory.send
 
     class Writable:
         def write(self, text):
-            send_func(text.encode())
+            chunk = text.encode('utf-8')
+            chunk_type = 1
+            binary_send_func(chunk_type.to_bytes(1, byteorder='big'))
+            chunk_len = len(chunk)
+            binary_send_func(chunk_len.to_bytes(4, byteorder='big'))
+            binary_send_func(chunk)
         def flush(self):
             pass
 
