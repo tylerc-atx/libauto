@@ -145,5 +145,19 @@ def connect_to_console_server():
         def flush(self):
             pass
 
-    return Writable()
+    def lcd_img_stream(jpg_buffer):
+        chunk = jpg_buffer
+        chunk_type = 2
+        binary_send_func(chunk_type.to_bytes(1, byteorder='big'))
+        chunk_len = len(chunk)
+        binary_send_func(chunk_len.to_bytes(4, byteorder='big'))
+        binary_send_func(chunk)
+
+    def lcd_clear_img():
+        chunk_type = 3
+        binary_send_func(chunk_type.to_bytes(1, byteorder='big'))
+        chunk_len = 0
+        binary_send_func(chunk_len.to_bytes(4, byteorder='big'))
+
+    return Writable(), lcd_img_stream, lcd_clear_img
 

@@ -26,7 +26,7 @@ do not print.
 __all__ = ['forward', 'reverse', 'left', 'right', 'pause',
            'capture', 'plot', 'classify_color',
            'detect_faces', 'detect_stop_signs', 'detect_pedestrians',
-           'object_location', 'object_size', 'lcdout']
+           'object_location', 'object_size']
 
 
 from car import db
@@ -45,7 +45,7 @@ def print_all(*args, **kwargs):
 
 
 start_reactor_thread()
-lcdout = connect_to_console_server()
+LCDOUT, LCD_IMG_STREAM, LCD_CLEAR_IMG = connect_to_console_server()
 
 
 CURR_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -136,10 +136,10 @@ def print(*objects, sep=' ', end='\n'):
     """
     Print to the AutoAuto console!
     """
-    built_in_print(*objects, sep=sep, end=end, file=lcdout)
+    built_in_print(*objects, sep=sep, end=end, file=LCDOUT)
 
 
-def capture(num_frames=1):
+def capture(num_frames=1, verbose=True):
     """
     Capture `num_frames` frames from the car's camera and return
     them as a numpy ndarray.
@@ -155,12 +155,14 @@ def capture(num_frames=1):
         for i, frame in zip(range(num_frames), CAMERA.stream()):
             frames.append(frame)
         frames = np.array(frames)
-        print_all("Captured {} frames.".format(num_frames))
+        if verbose:
+            print_all("Captured {} frames.".format(num_frames))
         return frames
 
     else:
         frame = CAMERA.capture()
-        print_all("Captured 1 frame.")
+        if verbose:
+            print_all("Captured 1 frame.")
         return frame
 
 
@@ -229,7 +231,7 @@ def plot(frames, **fig_kwargs):
 def stream(frame):
     """
     Stream the given `frame` (a numpy ndarray) to all browsers currently
-    viewing the stream.
+    viewing the stream. If `frame` is None, clear the outputs.
 
     The `frame` parameter must be a numpy ndarray with one of the
     following shapes:
@@ -237,9 +239,13 @@ def stream(frame):
         - (h, w, 1)   meaning a single 1-channel gray image of size `w`x`h`
         - (h, w)      meaning a single 1-channel gray image of size `w`x`h`
     """
-    if 'NET_STREAM_FUNC' not in globals():
-        global NET_STREAM_FUNC
-        port, NET_STREAM_FUNC = start_frame_stream_server()
+    if frame is None:
+        LCD_CLEAR_IMG()
+        return
+
+    if 'NET_IMG_STREAM' not in globals():
+        global NET_IMG_STREAM
+        port, NET_IMG_STREAM = start_frame_stream_server()
         print_all("Started the HTTP frame streaming server on TCP port {}.".format(port))
 
     # Convert the frame to a JPG buffer.
@@ -260,10 +266,11 @@ def stream(frame):
     jpg_buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 20])[1].tobytes()
 
     # Stream the frame!
-    NET_STREAM_FUNC(jpg_buffer)
+    NET_IMG_STREAM(jpg_buffer)
+    LCD_IMG_STREAM(jpg_buffer)
 
 
-def classify_color(frame, annotate=True):
+def classify_color(frame, annotate=True, verbose=True):
     """
     Classify the center region of `frame` as having either primarily "red",
     "yellow", or "green, or none of those ("background").
@@ -280,11 +287,12 @@ def classify_color(frame, annotate=True):
         print_all("Instantiated a ColorClassifier object!")
 
     p1, p2, classific = COLORCLASSIFIER.classify(frame, annotate=annotate)
-    print_all("Classified color as '{}'.".format(classific))
+    if verbose:
+        print_all("Classified color as '{}'.".format(classific))
     return classific
 
 
-def detect_faces(frame, annotate=True):
+def detect_faces(frame, annotate=True, verbose=True):
     """
     Detect faces inside of `frame`, and annotate each face.
 
@@ -302,11 +310,12 @@ def detect_faces(frame, annotate=True):
 
     faces = FACEDETECTOR.detect(frame, annotate=annotate)
     n = len(faces)
-    print_all("Found {} face{}.".format(n, 's' if n != 1 else ''))
+    if verbose:
+        print_all("Found {} face{}.".format(n, 's' if n != 1 else ''))
     return faces
 
 
-def detect_stop_signs(frame, annotate=True):
+def detect_stop_signs(frame, annotate=True, verbose=True):
     """
     Detect stop signs inside of `frame`, and annotate each stop sign.
 
@@ -324,11 +333,12 @@ def detect_stop_signs(frame, annotate=True):
 
     rects = STOPSIGNDETECTOR.detect(frame, annotate=annotate)
     n = len(rects)
-    print_all("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
+    if verbose:
+        print_all("Found {} stop sign{}.".format(n, 's' if n != 1 else ''))
     return rects
 
 
-def detect_pedestrians(frame, annotate=True):
+def detect_pedestrians(frame, annotate=True, verbose=True):
     """
     Detect pedestrians inside of `frame`, and annotate each pedestrian.
 
@@ -346,11 +356,12 @@ def detect_pedestrians(frame, annotate=True):
 
     rects = PEDESTRIANDETECTOR.detect(frame, annotate=annotate)
     n = len(rects)
-    print_all("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
+    if verbose:
+        print_all("Found {} pedestrian{}.".format(n, 's' if n != 1 else ''))
     return rects
 
 
-def object_location(object_list, frame_shape):
+def object_location(object_list, frame_shape, verbose=True):
     """
     Calculate the location of the largest object in `object_list`.
 
@@ -370,11 +381,12 @@ def object_location(object_list, frame_shape):
         location = 'frame_center'
     else:
         location = 'frame_right'
-    print_all("Object location is '{}'.".format(location))
+    if verbose:
+        print_all("Object location is '{}'.".format(location))
     return location
 
 
-def object_size(object_list, frame_shape):
+def object_size(object_list, frame_shape, verbose=True):
     """
     Calculate the ratio of the nearest object's area to the frame's area.
     """
@@ -383,6 +395,7 @@ def object_size(object_list, frame_shape):
         return 0.0
     areas = [w*h for x, y, w, h in object_list]
     ratio = max(areas) / (frame_shape[0] * frame_shape[1])
-    print_all("Object area is {}.".format(ratio))
+    if verbose:
+        print_all("Object area is {}.".format(ratio))
     return ratio
 

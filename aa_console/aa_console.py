@@ -3,6 +3,7 @@
 import pygame, sys
 from collections import deque
 import os
+import io
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
@@ -105,15 +106,22 @@ inbuf = sys.stdin.detach()
 
 
 def my_read(num_bytes):
+    if num_bytes <= 0:
+        return b''
     b = inbuf.read(num_bytes)
     if len(b) != num_bytes:
         sys.exit()
     return b
 
 
+stream_img = None
+
+
 while True:
     window_surface.fill(CONSOLE_BG_COLOR, console_rect)
     draw_lines(lines, console_rect)
+    if stream_img is not None:
+        window_surface.blit(stream_img, console_rect)
     pygame.display.update()
 
     chunk_type = int.from_bytes(my_read(1), byteorder='big')
@@ -130,7 +138,12 @@ while True:
         text = chunk.decode('utf-8')
         parse_text(text, lines, console_rect)
 
-    if chunk_type == 3:
+    if chunk_type == 2:
         # Image to display.
-        pass
+        chunk_buf = io.BytesIO(chunk)
+        stream_img = pygame.image.load(chunk_buf)
+
+    if chunk_type == 3:
+        # Clear the image.
+        stream_img = None
 
