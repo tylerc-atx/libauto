@@ -98,9 +98,9 @@ def _calibrate_steering():
 
     while True:
 
-        smin = float(input("Steering min (probably in [ -9, -10]): "))
-        smid = float(input("Steering mid (probably in [-14, -15]): "))
-        smax = float(input("Steering max (probably in [-19, -20]): "))
+        smin = float(input("Steering min (probably  9 or 10): "))
+        smid = float(input("Steering mid (probably 14 or 15): "))
+        smax = float(input("Steering max (probably 19 or 20): "))
 
         _calibrate_steering_helper(smin, smid, smax)
 
