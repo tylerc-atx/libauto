@@ -30,12 +30,20 @@ def set_pins():
     sonar._set_sonar_pins()
 
 
-def calibrate():
+def calibrate_all():
     """
     Calibrate all the necessary components on the vehicle.
     """
     throttle._calibrate_esc()
-    steering._calibrate_steering()
     throttle._calibrate_safe_speed()
+    steering._calibrate_steering()
     sonar._calibrate_sonar()
+
+
+def calibrate():
+    """
+    Calibrate the throttle and steering of the car.
+    """
+    throttle._calibrate_safe_speed()
+    steering._calibrate_steering()
 
