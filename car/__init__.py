@@ -237,13 +237,30 @@ def stream(frame):
         - (h, w, 1)   meaning a single 1-channel gray image of size `w`x`h`
         - (h, w)      meaning a single 1-channel gray image of size `w`x`h`
     """
-    if 'STREAM_FUNC' not in globals():
-        global STREAM_FUNC
-        port, STREAM_FUNC = start_frame_stream_server()
+    if 'NET_STREAM_FUNC' not in globals():
+        global NET_STREAM_FUNC
+        port, NET_STREAM_FUNC = start_frame_stream_server()
         print_all("Started the HTTP frame streaming server on TCP port {}.".format(port))
 
+    # Convert the frame to a JPG buffer.
+    if frame.ndim == 3:
+        if frame.shape[2] == 3:
+            # cv2.imencode expects a BGR image:
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            assert frame.ndim == 3 and frame.shape[2] == 3
+        elif frame.shape[2] == 1:
+            pass
+        else:
+            raise Exception("invalid number of channels")
+    elif frame.ndim == 2:
+        frame = np.expand_dims(frame, axis=2)
+        assert frame.ndim == 3 and frame.shape[2] == 1
+    else:
+        raise Exception("invalid frame ndarray ndim")
+    jpg_buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 20])[1].tobytes()
+
     # Stream the frame!
-    STREAM_FUNC(frame)
+    NET_STREAM_FUNC(jpg_buffer)
 
 
 def classify_color(frame, annotate=True):

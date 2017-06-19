@@ -21,9 +21,6 @@ from twisted.protocols import basic
 
 from threading import Thread
 
-import cv2
-import numpy as np
-
 
 def start_reactor_thread():
     def run_reactor():
@@ -84,38 +81,21 @@ def start_frame_stream_server():
         def buildProtocol(self, addr):
             return MultipartStreamerProtocol(self)
 
-        def send_img_buffer(self, data):
+        def send_img_buffer(self, jpg_buffer):
             header = ('--frame\r\n'
                       'Content-Type: image/jpeg\r\n'
-                      'Content-Length: {}\r\n\r\n').format(len(data)).encode()
-            data = header + data + b'\r\n'
+                      'Content-Length: {}\r\n\r\n').format(len(jpg_buffer)).encode()
+            jpg_buffer = header + jpg_buffer + b'\r\n'
             for client in self.clients:
-                client.transport.write(data)
+                client.transport.write(jpg_buffer)
 
     factory = MultipartStreamerFactory()
 
     port = 1025
     start_tcp_server(factory, port)
 
-    def submit_frame(frame):
-        # Ensure the proper shape of `frame`.
-        if frame.ndim == 3:
-            if frame.shape[2] == 3:
-                # cv2.imencode expects a BGR image:
-                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                assert frame.ndim == 3 and frame.shape[2] == 3
-            elif frame.shape[2] == 1:
-                pass
-            else:
-                raise Exception("invalid number of channels")
-        elif frame.ndim == 2:
-            frame = np.expand_dims(frame, axis=2)
-            assert frame.ndim == 3 and frame.shape[2] == 1
-        else:
-            raise Exception("invalid frame ndarray ndim")
-
-        data = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 20])[1].tobytes()
-        reactor.callFromThread(factory.send_img_buffer, data)
+    def submit_frame(jpg_buffer):
+        reactor.callFromThread(factory.send_img_buffer, jpg_buffer)
 
     return port, submit_frame
 

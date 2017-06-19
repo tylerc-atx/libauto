@@ -126,6 +126,11 @@ while True:
         lines.append([])
 
     if chunk_type == 0 or chunk_type == 1:
+        # Text to display.
         text = chunk.decode('utf-8')
         parse_text(text, lines, console_rect)
+
+    if chunk_type == 3:
+        # Image to display.
+        pass
 
