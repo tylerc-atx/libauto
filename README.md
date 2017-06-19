@@ -68,7 +68,7 @@ import car
 
 for _ in range(1000):
     frame = car.capture(verbose=False)
-    car.detect_faces(frame)
+    car.detect_faces(frame, verbose=False)
     car.stream(frame)
 ```
 
