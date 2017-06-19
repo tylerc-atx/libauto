@@ -66,10 +66,12 @@ The frames can be viewed at http://ip-of-your-car:1025/
 ```python
 import car
 
-while True:
-    frame = car.capture()
-    car.detect_faces(frame)
+for _ in range(400):
+    frame = car.capture(verbose=False)
+    car.detect_faces(frame, verbose=False)
     car.stream(frame)
+
+car.stream(None)  # clears the screen
 ```
 
 ### Classify Frame Center Color
@@ -125,6 +127,16 @@ size = car.object_size(rectangles, frame.shape)
 
 car.print("Object location:", location)
 car.print("Object size:", size)
+```
+
+### Raw OpenCV
+
+The cars use OpenCV under the hood (no pun intended) for many of the image processing tasks. You are welcome to use OpenCV directly as well if you want:
+
+```python
+import cv2
+
+print(cv2.__version__)
 ```
 
 ### Precise Steering
