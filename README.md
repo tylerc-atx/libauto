@@ -66,10 +66,12 @@ The frames can be viewed at http://ip-of-your-car:1025/
 ```python
 import car
 
-for _ in range(1000):
+for _ in range(400):
     frame = car.capture(verbose=False)
     car.detect_faces(frame, verbose=False)
     car.stream(frame)
+
+car.stream(None)  # clears the screen
 ```
 
 ### Classify Frame Center Color
