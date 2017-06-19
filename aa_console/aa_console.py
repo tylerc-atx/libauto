@@ -98,18 +98,34 @@ lines = deque()
 lines.append([])
 
 
+"""
+See: https://docs.python.org/3.1/library/sys.html#sys.stdin
+"""
+inbuf = sys.stdin.detach()
+
+
+def my_read(num_bytes):
+    b = inbuf.read(num_bytes)
+    if len(b) != num_bytes:
+        sys.exit()
+    return b
+
+
 while True:
     window_surface.fill(CONSOLE_BG_COLOR, console_rect)
     draw_lines(lines, console_rect)
     pygame.display.update()
 
-    # This is unfortunate. If we ask python for, say, 100 characters it will wait for
-    # exactly 100 or until EOF. What would be better would be to return the number of
-    # characters which are available immediately on the stream, but alas, it doesn't.
-    # (That's what the system-call `read()` does, but python doesn't follow that patter.)
-    # So, as a workaround, we'll just ask for one character at-a-time here:
-    text = sys.stdin.read(1)
-    if text == '':
-        sys.exit()
-    parse_text(text, lines, console_rect)
+    chunk_type = int.from_bytes(my_read(1), byteorder='big')
+    chunk_len  = int.from_bytes(my_read(4), byteorder='big')
+    chunk      = my_read(chunk_len)
+
+    if chunk_type == 0:
+        # Clear the text on the screen.
+        lines = deque()
+        lines.append([])
+
+    if chunk_type == 0 or chunk_type == 1:
+        text = chunk.decode('utf-8')
+        parse_text(text, lines, console_rect)
 
